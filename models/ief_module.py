@@ -28,8 +28,6 @@ class IEFModule(nn.Module):
                                         self.fc3)
 
         self.iterations = iterations
-
-        self.num_output_params = num_output_params
         self.initial_params_estimate = self.load_mean_params_6d_pose(config.SMPL_MEAN_PARAMS_PATH)
 
     def load_mean_params_6d_pose(self, mean_params_path):
@@ -60,14 +58,9 @@ class IEFModule(nn.Module):
             params_estimate += delta
             state = torch.cat([img_features, params_estimate], dim=1)
 
-        if self.num_output_params == (3 + 24*3 + 10):
-            cam_params = params_estimate[:, :3]
-            pose_params = params_estimate[:, 3:3+24*3]
-            shape_params = params_estimate[:, 3+24*3:]
-        elif self.num_output_params == (3 + 24*6 + 10):
-            cam_params = params_estimate[:, :3]
-            pose_params = params_estimate[:, 3:3 + 24*6]
-            shape_params = params_estimate[:, 3 + 24*6:]
+        cam_params = params_estimate[:, :3]
+        pose_params = params_estimate[:, 3:3 + 24*6]
+        shape_params = params_estimate[:, 3 + 24*6:]
 
         return cam_params, pose_params, shape_params
 

@@ -5,14 +5,16 @@ from models.ief_module import IEFModule
 
 
 class SingleInputRegressor(nn.Module):
+    """
+    Combined encoder + regressor model that takes proxy representation input (e.g.
+    silhouettes + 2D joints) and outputs SMPL body model parameters + weak-perspective
+    camera.
+    """
     def __init__(self,
                  resnet_in_channels=1,
                  resnet_layers=18,
                  ief_iters=3):
         """
-        Combined encoder + regressor model that takes proxy representation input (e.g.
-        silhouettes + 2D joints) and outputs SMPL body model parameters + weak-perspective
-        camera.
         :param resnet_in_channels: 1 if input silhouette/segmentation, 1 + num_joints if
         input silhouette/segmentation + joints.
         :param resnet_layers: number of layers in ResNet backbone (18 or 50)
