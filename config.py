@@ -1,4 +1,5 @@
 # ------------------------ Paths ------------------------
+# SMPL stuff
 SMPL_MODEL_DIR = 'info/smpl'
 SMPL_FACES_PATH = 'info/smpl_faces.npy'
 SMPL_MEAN_PARAMS_PATH = 'info/smpl_mean_params.npz'
@@ -7,6 +8,9 @@ COCOPLUS_REGRESSOR = 'info/cocoplus_regressor.npy'
 H36M_REGRESSOR = 'info/J_regressor_h36m.npy'
 VERTEX_TEXTURE_FILE = 'info/vertex_texture.npy'
 CUBE_PARTS_FILE = 'info/cube_parts.npy'
+
+# Data
+SYNTHETIC_TRAINING_NPZ = ''  # TODO training npz
 
 # ------------------------ Constants ------------------------
 FOCAL_LENGTH = 5000.
