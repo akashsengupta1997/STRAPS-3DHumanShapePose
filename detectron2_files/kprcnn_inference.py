@@ -10,9 +10,9 @@ matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 
 # import some common detectron2 utilities
-from detectron2_files import model_zoo
+from . import model_zoo
 from .default_predictor import DefaultPredictor
-from detectron2_files.config import get_cfg
+from .config import get_cfg
 
 
 # predictor returns bboxes, classes and pred keypoints
