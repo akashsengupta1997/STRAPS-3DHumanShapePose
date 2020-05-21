@@ -2,6 +2,26 @@ import torch
 import numpy as np
 
 
+def random_verts2D_deviation(vertices, delta_verts2d_dev_range=[-0.01, 0.01]):
+    """
+    Randomly add 2D uniform noise to vertices to create silhouettes/part segmentations with
+    corrupted edges.
+    :param vertices: (bs, 6890, 3)
+    :param delta_verts2d_dev_range: range of uniform noise.
+    """
+    batch_size = vertices.shape[0]
+    num_verts = vertices.shape[1]
+    device = vertices.device
+
+    noisy_vertices = vertices.clone()
+
+    h, l = delta_verts2d_dev_range
+    delta_verts2d_dev = (h - l) * torch.rand(batch_size, num_verts, 2, device=device) + l
+    noisy_vertices[:, :, :2] = noisy_vertices[:, :, :2] + delta_verts2d_dev
+
+    return noisy_vertices
+
+
 def random_joints2D_deviation(joints2D,
                               delta_j2d_dev_range=[-5, 5],
                               delta_j2d_hip_dev_range=[-15, 15]):
@@ -82,47 +102,25 @@ def random_occlude(seg, occlude_probability=0.5, occlude_box_dim=48):
 
 
 def augment_proxy_representation(orig_segs, orig_joints2D,
-                                 remove_appendages, deviate_joints2D, occlude_seg,
-                                 remove_appendages_classes, remove_appendages_probabilities,
-                                 delta_j2d_dev_range, delta_j2d_hip_dev_range,
-                                 occlude_probability, occlude_box_dim):
+                                 proxy_rep_augment_params):
     new_segs = orig_segs.clone()
     new_joints2D = orig_joints2D.clone()
 
-    if remove_appendages:
+    if proxy_rep_augment_params['remove_appendages']:
         new_segs = random_remove_bodyparts(new_segs,
-                                           classes_to_remove=remove_appendages_classes,
-                                           probabilities_to_remove=remove_appendages_probabilities)
-    if occlude_seg:
+                                           classes_to_remove=proxy_rep_augment_params['remove_appendages_classes'],
+                                           probabilities_to_remove=proxy_rep_augment_params['remove_appendages_probabilities'])
+    if proxy_rep_augment_params['occlude_seg']:
         new_segs = random_occlude(new_segs,
-                                  occlude_probability=occlude_probability,
-                                  occlude_box_dim=occlude_box_dim)
+                                  occlude_probability=proxy_rep_augment_params['occlude_probability'],
+                                  occlude_box_dim=proxy_rep_augment_params['occlude_box_dim'])
 
-    if deviate_joints2D:
+    if proxy_rep_augment_params['deviate_joints2D']:
         new_joints2D = random_joints2D_deviation(new_joints2D,
-                                                 delta_j2d_dev_range=delta_j2d_dev_range,
-                                                 delta_j2d_hip_dev_range=delta_j2d_hip_dev_range)
+                                                 delta_j2d_dev_range=proxy_rep_augment_params['delta_j2d_dev_range'],
+                                                 delta_j2d_hip_dev_range=proxy_rep_augment_params['delta_j2d_hip_dev_range'])
 
     return new_segs, new_joints2D
 
-
-def random_verts2D_deviation(vertices, delta_verts2d_dev_range=[-0.01, 0.01]):
-    """
-    Randomly add 2D uniform noise to vertices to create silhouettes/part segmentations with
-    corrupted edges.
-    :param vertices: (bs, 6890, 3)
-    :param delta_verts2d_dev_range: range of uniform noise.
-    """
-    batch_size = vertices.shape[0]
-    num_verts = vertices.shape[1]
-    device = vertices.device
-
-    noisy_vertices = vertices.clone()
-
-    h, l = delta_verts2d_dev_range
-    delta_verts2d_dev = (h - l) * torch.rand(batch_size, num_verts, 2, device=device) + l
-    noisy_vertices[:, :, :2] = noisy_vertices[:, :, :2] + delta_verts2d_dev
-
-    return noisy_vertices
 
 

@@ -26,24 +26,20 @@ def normal_sample_shape(batch_size, mean_shape, std_vector):
 
 def augment_smpl(orig_shape, pose, global_orients,
                  mean_shape,
-                 augment_shape=True,
-                 delta_betas_distribution='uniform',
-                 delta_betas_range=[-3, 3],
-                 delta_betas_std_vector=None):
+                 smpl_augment_params):
     """
-    Augments SMPL shape parameters. Also converts SMPL pose parameters to rotation matrices.
+    Augments SMPL shape parameters. Also converts SMPL pose parameters (in axis angle form)
+    to rotation matrices.
     :param orig_shape: original shape.
     :param pose: pose parameters for the body (excluding root orientation).
     :param global_orients: root orientation.
     :param mean_shape: mean SMPL shape.
-    :param augment_shape: boolean flag, if True, randomly augment SMPL shape parameters.
-    :param delta_betas_distribution: form of SMPL shape parameter sampling distribution.
-    Can be 'normal' or 'uniform'.
-    :param delta_betas_range: if SMPL shape sampling distribution is uniform, this is the range
-    of the uniform distribution.
-    :param delta_betas_std_vector: if SMPL shape sampling distribution is normal, this is the
-    standard deviation for each element of the shape vector.
+    :param smpl_augment_params: dict containing parameters for SMPL augmentation.
     """
+    augment_shape = smpl_augment_params['augment_shape']
+    delta_betas_distribution = smpl_augment_params['delta_betas_distribution']  # 'normal' or 'uniform' shape sampling distribution
+    delta_betas_range = smpl_augment_params['delta_betas_range']  # Range of uniformly-distributed shape parameters.
+    delta_betas_std_vector = smpl_augment_params['delta_betas_std_vector']  # std of normally-distributed the shape parameters.
 
     batch_size = orig_shape.shape[0]
     if augment_shape:
