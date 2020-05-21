@@ -1,5 +1,3 @@
-import sys
-sys.path.insert(1, '/scratch/as2562/pytorch_indirect_learning')
 import cv2
 import os
 import argparse
@@ -10,9 +8,11 @@ matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 
 # import some common detectron2 utilities
-from detectron2_files import model_zoo
-from detectron2_files.default_predictor import DefaultPredictor
-from detectron2_files.config import get_cfg
+from detectron2 import model_zoo
+from detectron2.engine import DefaultPredictor
+from detectron2.config import get_cfg
+from detectron2.utils.visualizer import Visualizer
+from detectron2.data import MetadataCatalog
 
 
 # predictor returns bboxes, classes and pred keypoints
