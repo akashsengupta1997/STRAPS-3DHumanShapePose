@@ -1,3 +1,5 @@
+import sys
+sys.path.insert(1, '/scratch/as2562/pytorch_indirect_learning')
 import cv2
 import os
 import argparse
