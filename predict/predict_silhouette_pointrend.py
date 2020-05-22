@@ -66,12 +66,14 @@ def predict_silhouette_pointrend(input_image):
 
     orig_h, orig_w = input_image.shape[:2]
     outputs = predictor(input_image)['instances']
+    print(outputs)
     classes = outputs.pred_classes
     masks = outputs.pred_masks
     human_masks = masks[classes == 0]
     human_masks = human_masks.cpu().detach().numpy()
     largest_centred_mask_index = get_largest_centred_mask(human_masks, orig_w, orig_h)
     human_mask = human_masks[largest_centred_mask_index, :, :].astype(np.uint8)
+    print(human_mask.shape)
     overlay = cv2.addWeighted(input, 1.0,
                               255 * np.tile(human_mask[:, :, None], [1, 1, 3]),
                               0.5, gamma=0)
