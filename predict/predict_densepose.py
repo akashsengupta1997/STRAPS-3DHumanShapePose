@@ -114,6 +114,7 @@ def predict_densepose(input_image):
     vis_I_image = apply_colormap(I_image, vmin=0, vmax=24)
     vis_I_image = vis_I_image[:, :, :3].astype(np.float32)
     vis_I_image[I_image == 0, :] = np.zeros(3, dtype=np.float32)
+    print(input_image.max(), vis_I_image.max(), input_image.min(), vis_I_image.min())
     overlay_vis = cv2.addWeighted(input_image.astype(np.float32),
                                   0.6,
                                   vis_I_image,
