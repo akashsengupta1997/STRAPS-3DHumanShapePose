@@ -79,6 +79,7 @@ def predict_densepose(input_image):
 
     pred_densepose = outputs.pred_densepose.to_result(bboxes_XYWH)
     print(pred_densepose)
+    print(pred_densepose.results)
     # iuv_arr = DensePoseResult.decode_png_data(*pred_densepose)
     # print(iuv_arr)
 
