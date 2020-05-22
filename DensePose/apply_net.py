@@ -60,7 +60,7 @@ def register_action(cls: type):
 class InferenceAction(object):
     @classmethod
     def add_arguments(cls: type, parser: argparse.ArgumentParser):
-        super(InferenceAction, cls).add_arguments(parser)
+        # super(InferenceAction, cls).add_arguments(parser)
         parser.add_argument("cfg", metavar="<config>", help="Config file")
         parser.add_argument("model", metavar="<model>", help="Model file")
         parser.add_argument("input", metavar="<input>", help="Input data")
