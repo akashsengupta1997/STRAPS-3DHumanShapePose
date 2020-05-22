@@ -9,25 +9,13 @@ The output file name is currently set up for the sports_videos_smpl dataset - CH
 import os
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"   # see issue #152
 os.environ["CUDA_VISIBLE_DEVICES"] = "1"
-import torch
 import argparse
 import numpy as np
 import cv2
 import matplotlib
-matplotlib.use('TkAgg')
-import matplotlib.pyplot as plt
 
-import detectron2.utils.comm as comm
-from detectron2.checkpoint import DetectionCheckpointer
 from detectron2.config import get_cfg
-from detectron2.data import MetadataCatalog
 from detectron2.engine import DefaultTrainer, default_argument_parser, default_setup, launch, DefaultPredictor
-from detectron2.evaluation import (
-    CityscapesEvaluator,
-    COCOEvaluator,
-    DatasetEvaluators,
-    verify_results,
-)
 
 from point_rend import add_pointrend_config
 
