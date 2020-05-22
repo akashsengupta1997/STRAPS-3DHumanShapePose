@@ -86,9 +86,6 @@ def visualise_denspose_results(dump_file, out_folder):
         sorted_bbox_indices = np.argsort(bboxes_area)[::-1]
         bbox_found = False
         i = 0
-        print(bboxes_xyxy)
-        print(bboxes_area)
-        print(sorted_bbox_indices)
         while not bbox_found and i < sorted_bbox_indices.shape[0]:
             bbox_index = sorted_bbox_indices[i]
             bbox = bboxes_xyxy[bbox_index]
@@ -102,7 +99,9 @@ def visualise_denspose_results(dump_file, out_folder):
         if not bbox_found:
             largest_centred_bbox_index = sorted_bbox_indices[0]
 
+        print(entry['pred_densepose'])
         result_encoded = entry['pred_densepose'].results[largest_centred_bbox_index]
+        print(result_encoded)
         iuv_arr = DensePoseResult.decode_png_data(*result_encoded)
 
         # Round bbox to int
