@@ -18,6 +18,7 @@ def setup_config():
     add_pointrend_config(cfg)
     cfg.merge_from_file(config_file)
     cfg.MODEL.WEIGHTS = "PointRend/checkpoints/pointrend_rcnn_R_50_fpn.pkl"
+    print("POINTREND", os.path.isfile(cfg.MODEL.WEIGHTS))
     cfg.freeze()
     return cfg
 
