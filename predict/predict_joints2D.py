@@ -33,8 +33,8 @@ def get_largest_centred_bounding_box(bboxes, orig_w, orig_h):
     while not bbox_found and i < sorted_bbox_indices.shape[0]:
         bbox_index = sorted_bbox_indices[i]
         bbox = bboxes[bbox_index]
-        bbox_centre = ((bbox[0] + bbox[2]) / 2.0, (bbox[1] + bbox[3]) / 2.0)  # Centre in width, height
-        if abs(bbox_centre[0] - orig_w / 2.0) < 80 and abs(bbox_centre[1] - orig_h / 2.0) < 80:
+        bbox_centre = ((bbox[0] + bbox[2]) / 2.0, (bbox[1] + bbox[3]) / 2.0)  # Centre (width, height)
+        if abs(bbox_centre[0] - orig_w / 2.0) < orig_w/6.0 and abs(bbox_centre[1] - orig_h / 2.0) < orig_w/6.0:
             largest_centred_bbox_index = bbox_index
             bbox_found = True
         i += 1
@@ -56,12 +56,12 @@ def predict_joints2D(input_image):
 
     image = np.copy(input_image)
     orig_h, orig_w = image.shape[:2]
-    outputs = predictor(image)
+    outputs = predictor(image)  # Multiple bboxes + keypoints predictions if there are multiple people in the image
     bboxes = outputs['instances'].pred_boxes.tensor.cpu().numpy()
     if bboxes.shape[0] == 0:  # Can't find any people in image
         keypoints = np.zeros((17, 3))
     else:
-        largest_bbox_index = get_largest_centred_bounding_box(bboxes, orig_w, orig_h)
+        largest_bbox_index = get_largest_centred_bounding_box(bboxes, orig_w, orig_h)  # Picks out centred person that is largest in the image.
         keypoints = outputs['instances'].pred_keypoints.cpu().numpy()
         keypoints = keypoints[largest_bbox_index]
 
