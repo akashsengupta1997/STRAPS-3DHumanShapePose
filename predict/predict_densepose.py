@@ -74,6 +74,8 @@ def predict_densepose(input_image):
     outputs = predictor(input_image)["instances"]
     print('DENSEPOSE')
     print(outputs)
+    print(outputs.pred_boxes)
+    print(outputs.pred_densepose)
     bboxes = outputs.pred_boxes.tensor.cpu().numpy()  # Multiple densepose predictions if there are multiple people in the image
     largest_centred_bbox_index = get_largest_centred_bounding_box(bboxes, orig_w, orig_h)  # Picks out centred person that is largest in the image.
     iuv_arr = outputs.pred_densepose[largest_centred_bbox_index]
