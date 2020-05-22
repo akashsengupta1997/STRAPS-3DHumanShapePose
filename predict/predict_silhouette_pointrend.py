@@ -73,5 +73,5 @@ def predict_silhouette_pointrend(input_image):
     overlay_vis = cv2.addWeighted(input_image, 1.0,
                               255 * np.tile(human_mask[:, :, None], [1, 1, 3]),
                               0.5, gamma=0)
-
+    print('PR', input_image.max(), human_mask.max(), input_image.min(), human_mask.min(), overlay_vis.max(), overlay_vis.min())
     return human_mask, overlay_vis
