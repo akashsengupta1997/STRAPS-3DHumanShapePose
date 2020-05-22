@@ -9,6 +9,7 @@ matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 
 # TODO pre-processing step (pad to square)
+# TODO load all predictor only one time (in this script somewhere)
 # TODO DP predict, 3D predict
 def predict_on_folder(input_folder):
     image_fnames = [f for f in sorted(os.listdir(input_folder)) if f.endswith('.png') or
