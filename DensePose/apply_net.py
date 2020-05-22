@@ -37,17 +37,6 @@ logger = logging.getLogger(LOGGER_NAME)
 _ACTION_REGISTRY: Dict[str, "Action"] = {}
 
 
-# class Action(object):
-#     @classmethod
-#     def add_arguments(cls: type, parser: argparse.ArgumentParser):
-#         parser.add_argument(
-#             "-v",
-#             "--verbosity",
-#             action="count",
-#             help="Verbose mode. Multiple -v options increase the verbosity.",
-#         )
-
-
 def register_action(cls: type):
     """
     Decorator for action classes to automate action registration
@@ -178,117 +167,117 @@ class DumpAction(InferenceAction):
             logger.info(f"Output saved to {out_fname}")
 
 
-@register_action
-class ShowAction(InferenceAction):
-    """
-    Show action that visualizes selected entries on an image
-    """
-
-    COMMAND: ClassVar[str] = "show"
-    VISUALIZERS: ClassVar[Dict[str, object]] = {
-        "dp_contour": DensePoseResultsContourVisualizer,
-        "dp_segm": DensePoseResultsFineSegmentationVisualizer,
-        "dp_u": DensePoseResultsUVisualizer,
-        "dp_v": DensePoseResultsVVisualizer,
-        "bbox": ScoredBoundingBoxVisualizer,
-    }
-
-    @classmethod
-    def add_parser(cls: type, subparsers: argparse._SubParsersAction):
-        parser = subparsers.add_parser(cls.COMMAND, help="Visualize selected entries")
-        cls.add_arguments(parser)
-        parser.set_defaults(func=cls.execute)
-
-    @classmethod
-    def add_arguments(cls: type, parser: argparse.ArgumentParser):
-        super(ShowAction, cls).add_arguments(parser)
-        parser.add_argument(
-            "visualizations",
-            metavar="<visualizations>",
-            help="Comma separated list of visualizations, possible values: "
-            "[{}]".format(",".join(sorted(cls.VISUALIZERS.keys()))),
-        )
-        parser.add_argument(
-            "--min_score",
-            metavar="<score>",
-            default=0.8,
-            type=float,
-            help="Minimum detection score to visualize",
-        )
-        parser.add_argument(
-            "--nms_thresh", metavar="<threshold>", default=None, type=float, help="NMS threshold"
-        )
-        parser.add_argument(
-            "--output",
-            metavar="<image_file>",
-            default="outputres.png",
-            help="File name to save output to",
-        )
-
-    @classmethod
-    def setup_config(
-        cls: type, config_fpath: str, model_fpath: str, args: argparse.Namespace, opts: List[str]
-    ):
-        opts.append("MODEL.ROI_HEADS.SCORE_THRESH_TEST")
-        opts.append(str(args.min_score))
-        if args.nms_thresh is not None:
-            opts.append("MODEL.ROI_HEADS.NMS_THRESH_TEST")
-            opts.append(str(args.nms_thresh))
-        cfg = super(ShowAction, cls).setup_config(config_fpath, model_fpath, args, opts)
-        return cfg
-
-    @classmethod
-    def execute_on_outputs(
-        cls: type, context: Dict[str, Any], entry: Dict[str, Any], outputs: Instances
-    ):
-        import cv2
-        import numpy as np
-
-        visualizer = context["visualizer"]
-        extractor = context["extractor"]
-        image_fpath = entry["file_name"]
-        logger.info(f"Processing {image_fpath}")
-        image = cv2.cvtColor(entry["image"], cv2.COLOR_BGR2GRAY)
-        image = np.tile(image[:, :, np.newaxis], [1, 1, 3])
-        data = extractor(outputs)
-        image_vis = visualizer.visualize(image, data)
-        entry_idx = context["entry_idx"] + 1
-        out_fname = cls._get_out_fname(entry_idx, context["out_fname"])
-        out_dir = os.path.dirname(out_fname)
-        if len(out_dir) > 0 and not os.path.exists(out_dir):
-            os.makedirs(out_dir)
-        cv2.imwrite(out_fname, image_vis)
-        logger.info(f"Output saved to {out_fname}")
-        context["entry_idx"] += 1
-
-    @classmethod
-    def postexecute(cls: type, context: Dict[str, Any]):
-        pass
-
-    @classmethod
-    def _get_out_fname(cls: type, entry_idx: int, fname_base: str):
-        base, ext = os.path.splitext(fname_base)
-        return base + ".{0:04d}".format(entry_idx) + ext
-
-    @classmethod
-    def create_context(cls: type, args: argparse.Namespace) -> Dict[str, Any]:
-        vis_specs = args.visualizations.split(",")
-        visualizers = []
-        extractors = []
-        for vis_spec in vis_specs:
-            vis = cls.VISUALIZERS[vis_spec]()
-            visualizers.append(vis)
-            extractor = create_extractor(vis)
-            extractors.append(extractor)
-        visualizer = CompoundVisualizer(visualizers)
-        extractor = CompoundExtractor(extractors)
-        context = {
-            "extractor": extractor,
-            "visualizer": visualizer,
-            "out_fname": args.output,
-            "entry_idx": 0,
-        }
-        return context
+# @register_action
+# class ShowAction(InferenceAction):
+#     """
+#     Show action that visualizes selected entries on an image
+#     """
+#
+#     COMMAND: ClassVar[str] = "show"
+#     VISUALIZERS: ClassVar[Dict[str, object]] = {
+#         "dp_contour": DensePoseResultsContourVisualizer,
+#         "dp_segm": DensePoseResultsFineSegmentationVisualizer,
+#         "dp_u": DensePoseResultsUVisualizer,
+#         "dp_v": DensePoseResultsVVisualizer,
+#         "bbox": ScoredBoundingBoxVisualizer,
+#     }
+#
+#     @classmethod
+#     def add_parser(cls: type, subparsers: argparse._SubParsersAction):
+#         parser = subparsers.add_parser(cls.COMMAND, help="Visualize selected entries")
+#         cls.add_arguments(parser)
+#         parser.set_defaults(func=cls.execute)
+#
+#     @classmethod
+#     def add_arguments(cls: type, parser: argparse.ArgumentParser):
+#         super(ShowAction, cls).add_arguments(parser)
+#         parser.add_argument(
+#             "visualizations",
+#             metavar="<visualizations>",
+#             help="Comma separated list of visualizations, possible values: "
+#             "[{}]".format(",".join(sorted(cls.VISUALIZERS.keys()))),
+#         )
+#         parser.add_argument(
+#             "--min_score",
+#             metavar="<score>",
+#             default=0.8,
+#             type=float,
+#             help="Minimum detection score to visualize",
+#         )
+#         parser.add_argument(
+#             "--nms_thresh", metavar="<threshold>", default=None, type=float, help="NMS threshold"
+#         )
+#         parser.add_argument(
+#             "--output",
+#             metavar="<image_file>",
+#             default="outputres.png",
+#             help="File name to save output to",
+#         )
+#
+#     @classmethod
+#     def setup_config(
+#         cls: type, config_fpath: str, model_fpath: str, args: argparse.Namespace, opts: List[str]
+#     ):
+#         opts.append("MODEL.ROI_HEADS.SCORE_THRESH_TEST")
+#         opts.append(str(args.min_score))
+#         if args.nms_thresh is not None:
+#             opts.append("MODEL.ROI_HEADS.NMS_THRESH_TEST")
+#             opts.append(str(args.nms_thresh))
+#         cfg = super(ShowAction, cls).setup_config(config_fpath, model_fpath, args, opts)
+#         return cfg
+#
+#     @classmethod
+#     def execute_on_outputs(
+#         cls: type, context: Dict[str, Any], entry: Dict[str, Any], outputs: Instances
+#     ):
+#         import cv2
+#         import numpy as np
+#
+#         visualizer = context["visualizer"]
+#         extractor = context["extractor"]
+#         image_fpath = entry["file_name"]
+#         logger.info(f"Processing {image_fpath}")
+#         image = cv2.cvtColor(entry["image"], cv2.COLOR_BGR2GRAY)
+#         image = np.tile(image[:, :, np.newaxis], [1, 1, 3])
+#         data = extractor(outputs)
+#         image_vis = visualizer.visualize(image, data)
+#         entry_idx = context["entry_idx"] + 1
+#         out_fname = cls._get_out_fname(entry_idx, context["out_fname"])
+#         out_dir = os.path.dirname(out_fname)
+#         if len(out_dir) > 0 and not os.path.exists(out_dir):
+#             os.makedirs(out_dir)
+#         cv2.imwrite(out_fname, image_vis)
+#         logger.info(f"Output saved to {out_fname}")
+#         context["entry_idx"] += 1
+#
+#     @classmethod
+#     def postexecute(cls: type, context: Dict[str, Any]):
+#         pass
+#
+#     @classmethod
+#     def _get_out_fname(cls: type, entry_idx: int, fname_base: str):
+#         base, ext = os.path.splitext(fname_base)
+#         return base + ".{0:04d}".format(entry_idx) + ext
+#
+#     @classmethod
+#     def create_context(cls: type, args: argparse.Namespace) -> Dict[str, Any]:
+#         vis_specs = args.visualizations.split(",")
+#         visualizers = []
+#         extractors = []
+#         for vis_spec in vis_specs:
+#             vis = cls.VISUALIZERS[vis_spec]()
+#             visualizers.append(vis)
+#             extractor = create_extractor(vis)
+#             extractors.append(extractor)
+#         visualizer = CompoundVisualizer(visualizers)
+#         extractor = CompoundExtractor(extractors)
+#         context = {
+#             "extractor": extractor,
+#             "visualizer": visualizer,
+#             "out_fname": args.output,
+#             "entry_idx": 0,
+#         }
+#         return context
 
 
 def create_argument_parser() -> argparse.ArgumentParser:
