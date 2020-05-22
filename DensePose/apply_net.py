@@ -37,15 +37,15 @@ logger = logging.getLogger(LOGGER_NAME)
 _ACTION_REGISTRY: Dict[str, "Action"] = {}
 
 
-class Action(object):
-    @classmethod
-    def add_arguments(cls: type, parser: argparse.ArgumentParser):
-        parser.add_argument(
-            "-v",
-            "--verbosity",
-            action="count",
-            help="Verbose mode. Multiple -v options increase the verbosity.",
-        )
+# class Action(object):
+#     @classmethod
+#     def add_arguments(cls: type, parser: argparse.ArgumentParser):
+#         parser.add_argument(
+#             "-v",
+#             "--verbosity",
+#             action="count",
+#             help="Verbose mode. Multiple -v options increase the verbosity.",
+#         )
 
 
 def register_action(cls: type):
@@ -57,7 +57,7 @@ def register_action(cls: type):
     return cls
 
 
-class InferenceAction(Action):
+class InferenceAction(object):
     @classmethod
     def add_arguments(cls: type, parser: argparse.ArgumentParser):
         super(InferenceAction, cls).add_arguments(parser)
