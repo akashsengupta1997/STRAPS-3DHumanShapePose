@@ -20,4 +20,6 @@ def predict_on_folder(input_folder):
         plt.show()
 
 
+os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"  # see issue #152
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 predict_on_folder("/data/cvfs/as2562/datasets/toy_datasets/testing/cropped_frames")
