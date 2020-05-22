@@ -1,3 +1,5 @@
 from PointRend import point_rend
 
-print('hello')
+
+def predict():
+    print('test')
