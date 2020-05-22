@@ -9,18 +9,17 @@ from detectron2.engine import DefaultPredictor
 from PointRend.point_rend import add_pointrend_config
 
 
-def setup_predictor():
+def setup_config():
     """
     Create configs and perform basic setups.
     """
     config_file = "PointRend/configs/InstanceSegmentation/pointrend_rcnn_R_50_FPN_3x_coco.yaml"
-    weights = ['MODEL.WEIGHTS', 'PointRend/checkpoints/pointrend_rcnn_R50_fpn.pkl']
     cfg = get_cfg()
     add_pointrend_config(cfg)
     cfg.merge_from_file(config_file)
-    cfg.merge_from_list(weights)
-    predictor = DefaultPredictor(cfg)
-    return predictor
+    cfg.MODEL.WEIGHTS = "PointRend/checkpoints/pointrend_rcnn_R50_fpn.pkl"
+    cfg.freeze()
+    return cfg
 
 
 def get_largest_centred_mask(human_masks, orig_w, orig_h):
@@ -59,7 +58,8 @@ def predict_silhouette_pointrend(input_image):
     """
 
     """
-    predictor = setup_predictor()
+    cfg = setup_config()
+    predictor = DefaultPredictor(cfg)
 
     orig_h, orig_w = input_image.shape[:2]
     outputs = predictor(input_image)['instances']  # Multiple silhouette predictions if there are multiple people in the image
