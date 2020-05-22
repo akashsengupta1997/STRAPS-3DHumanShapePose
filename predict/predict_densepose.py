@@ -33,8 +33,7 @@ def setup_config():
     cfg = get_cfg()
     add_densepose_config(cfg)
     cfg.merge_from_file(config_file)
-    cfg.MODEL.WEIGHTS = "DensePose/checkpoints/densepose_rcnn_R_101_fpn_s1x.pkl "
-    print("DENSEPOSE", os.path.isfile(cfg.MODEL.WEIGHTS))
+    cfg.MODEL.WEIGHTS = "DensePose/checkpoints/densepose_rcnn_R_101_fpn_s1x.pkl"
     cfg.freeze()
     return cfg
 
