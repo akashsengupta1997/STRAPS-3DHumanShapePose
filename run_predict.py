@@ -12,11 +12,12 @@ def predict_on_folder(input_folder):
     image_fnames = [f for f in sorted(os.listdir(input_folder)) if f.endswith('.png') or
                     f.endswith('.jpg')]
     for fname in image_fnames:
-        print(fname)
+        print("Predicting on:", fname)
         image = cv2.imread(os.path.join(input_folder, fname))
         keypoints, joints2D_vis = predict_joints2D(image)
-        print(keypoints.shape)
         plt.imshow(joints2D_vis)
+        plt.show()
+        plt.imshow(image)
         plt.show()
 
 
