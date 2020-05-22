@@ -101,7 +101,7 @@ def visualise_denspose_results(dump_file, out_folder):
 
         print(entry['pred_densepose'])
         result_encoded = entry['pred_densepose'].results[largest_centred_bbox_index]
-        print(result_encoded)
+        # print(result_encoded)
         iuv_arr = DensePoseResult.decode_png_data(*result_encoded)
 
         # Round bbox to int
