@@ -77,7 +77,7 @@ def predict_densepose(input_image):
     bboxes = bboxes.cpu().detach().numpy()
     largest_centred_bbox_index = get_largest_centred_bounding_box(bboxes, orig_w, orig_h)  # Picks out centred person that is largest in the image.
 
-    pred_densepose = outputs.pred_densepose.to_result(bboxes_XYWH)
+    pred_densepose = outputs.pred_densepose.to_result(bboxes_XYWH)[largest_centred_bbox_index]
     print(pred_densepose)
     iuv_arr = DensePoseResult.decode_png_data(*pred_densepose)
     print(iuv_arr)
