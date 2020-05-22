@@ -76,8 +76,8 @@ def predict_densepose(input_image):
     print(outputs)
     print(outputs.pred_boxes)
     print(outputs.pred_densepose)
-    bboxes = outputs.pred_boxes  # Multiple densepose predictions if there are multiple people in the image
-    print(bboxes.shape, type(bboxes))
+    bboxes = outputs.pred_boxes.tensor  # Multiple densepose predictions if there are multiple people in the image
+    print(bboxes, bboxes.shape, type(bboxes))
     bboxes_XYWH = BoxMode.convert(bboxes, BoxMode.XYXY_ABS, BoxMode.XYWH_ABS)
     bboxes = bboxes.cpu().detach().numpy()
     largest_centred_bbox_index = get_largest_centred_bounding_box(bboxes, orig_w, orig_h)  # Picks out centred person that is largest in the image.
