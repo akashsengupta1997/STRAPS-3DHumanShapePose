@@ -15,7 +15,7 @@ def setup_predictor():
     Create configs and perform basic setups.
     """
     config_file = "PointRend/configs/InstanceSegmentation/pointrend_rcnn_R_50_FPN_3x_coco.yaml"
-    weights = ['MODEL.WEIGHTS', 'checkpoints/pointrend_rcnn_R50_fpn.pkl']
+    weights = ['MODEL.WEIGHTS', 'PointRend/checkpoints/pointrend_rcnn_R50_fpn.pkl']
     cfg = get_cfg()
     add_pointrend_config(cfg)
     cfg.merge_from_file(config_file)
