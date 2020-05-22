@@ -1,31 +1,48 @@
-import argparse
-import glob
-import os
-import pickle
 import sys
-from typing import Any, ClassVar, Dict, List
-import torch
+import cv2
 import numpy as np
+import matplotlib
+matplotlib.use('TkAgg')
+import matplotlib.pyplot as plt
+
 
 from detectron2.config import get_cfg
 from detectron2.engine.defaults import DefaultPredictor
 from detectron2.structures.boxes import BoxMode
-from detectron2.structures.instances import Instances
 
 from DensePose.densepose import add_densepose_config
 from DensePose.densepose.structures import DensePoseResult
 
 
-_ACTION_REGISTRY: Dict[str, "Action"] = {}
 
+def apply_colormap(image, vmin=None, vmax=None, cmap='viridis', cmap_seed=1):
+    """
+    Apply a matplotlib colormap to an image.
 
-def register_action(cls: type):
+    This method will preserve the exact image size. `cmap` can be either a
+    matplotlib colormap name, a discrete number, or a colormap instance. If it
+    is a number, a discrete colormap will be generated based on the HSV
+    colorspace. The permutation of colors is random and can be controlled with
+    the `cmap_seed`. The state of the RNG is preserved.
     """
-    Decorator for action classes to automate action registration
-    """
-    global _ACTION_REGISTRY
-    _ACTION_REGISTRY[cls.COMMAND] = cls
-    return cls
+    image = image.astype("float64")  # Returns a copy.
+    # Normalization.
+    if vmin is not None:
+        imin = float(vmin)
+        image = np.clip(image, vmin, sys.float_info.max)
+    else:
+        imin = np.min(image)
+    if vmax is not None:
+        imax = float(vmax)
+        image = np.clip(image, -sys.float_info.max, vmax)
+    else:
+        imax = np.max(image)
+    image -= imin
+    image /= (imax - imin)
+    # Visualization.
+    cmap_ = plt.get_cmap(cmap)
+    vis = cmap_(image, bytes=True)
+    return vis
 
 
 def setup_config():
@@ -78,32 +95,30 @@ def predict_densepose(input_image):
     largest_centred_bbox_index = get_largest_centred_bounding_box(bboxes, orig_w, orig_h)  # Picks out centred person that is largest in the image.
 
     pred_densepose = outputs.pred_densepose.to_result(bboxes_XYWH)
-    print(pred_densepose)
-    print(pred_densepose.results)
     iuv_arr = DensePoseResult.decode_png_data(*pred_densepose.results[largest_centred_bbox_index])
-    print(iuv_arr)
 
     # Round bbox to int
-    # largest_bbox = bboxes[largest_centred_bbox_index]
-    # w1 = largest_bbox[0]
-    # w2 = largest_bbox[0] + iuv_arr.shape[2]
-    # h1 = largest_bbox[1]
-    # h2 = largest_bbox[1] + iuv_arr.shape[1]
-    #
-    # I_image = np.zeros((orig_h, orig_w))
-    # I_image[int(h1):int(h2), int(w1):int(w2)] = iuv_arr[0, :, :]
+    largest_bbox = bboxes[largest_centred_bbox_index]
+    w1 = largest_bbox[0]
+    w2 = largest_bbox[0] + iuv_arr.shape[2]
+    h1 = largest_bbox[1]
+    h2 = largest_bbox[1] + iuv_arr.shape[1]
+
+    I_image = np.zeros((orig_h, orig_w))
+    I_image[int(h1):int(h2), int(w1):int(w2)] = iuv_arr[0, :, :]
     # U_image = np.zeros((orig_h, orig_w))
     # U_image[int(h1):int(h2), int(w1):int(w2)] = iuv_arr[1, :, :]
     # V_image = np.zeros((orig_h, orig_w))
     # V_image[int(h1):int(h2), int(w1):int(w2)] = iuv_arr[2, :, :]
 
-    # Save visualisation and I image (i.e. segmentation mask)
-    # vis_I_image = apply_colormap(I_image, vmin=0, vmax=24)
-    # vis_I_image = vis_I_image[:, :, :3].astype(np.float32)
-    # vis_I_image[I_image == 0, :] = np.zeros(3, dtype=np.float32)
-    # overlay = cv2.addWeighted(frame,
-    #                           0.6,
-    #                           vis_I_image,
-    #                           0.4,
-    #                           gamma=0)
+    vis_I_image = apply_colormap(I_image, vmin=0, vmax=24)
+    vis_I_image = vis_I_image[:, :, :3].astype(np.float32)
+    vis_I_image[I_image == 0, :] = np.zeros(3, dtype=np.float32)
+    overlay_vis = cv2.addWeighted(input_image,
+                              0.6,
+                              vis_I_image,
+                              0.4,
+                              gamma=0)
+
+    return I_image, overlay_vis
 

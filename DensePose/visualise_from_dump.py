@@ -99,8 +99,6 @@ def visualise_denspose_results(dump_file, out_folder):
         if not bbox_found:
             largest_centred_bbox_index = sorted_bbox_indices[0]
 
-        print(entry['pred_densepose'])
-        print(entry['pred_densepose'].results)
         result_encoded = entry['pred_densepose'].results[largest_centred_bbox_index]
         # print(result_encoded)
         iuv_arr = DensePoseResult.decode_png_data(*result_encoded)
