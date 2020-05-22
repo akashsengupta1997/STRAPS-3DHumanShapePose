@@ -17,7 +17,7 @@ def setup_config():
     cfg = get_cfg()
     add_pointrend_config(cfg)
     cfg.merge_from_file(config_file)
-    cfg.MODEL.WEIGHTS = "PointRend/checkpoints/pointrend_rcnn_R50_fpn.pkl"
+    cfg.MODEL.WEIGHTS = "PointRend/checkpoints/pointrend_rcnn_R_50_fpn.pkl"
     cfg.freeze()
     return cfg
 
@@ -56,7 +56,8 @@ def get_largest_centred_mask(human_masks, orig_w, orig_h):
 
 def predict_silhouette_pointrend(input_image):
     """
-
+    Predicts human silhouette (binary segmetnation) given a cropped and centred input image.
+    :param input_images: (wh, wh)
     """
     cfg = setup_config()
     predictor = DefaultPredictor(cfg)
@@ -69,8 +70,8 @@ def predict_silhouette_pointrend(input_image):
     human_masks = human_masks.cpu().detach().numpy()
     largest_centred_mask_index = get_largest_centred_mask(human_masks, orig_w, orig_h)  # Picks out centred person that is largest in the image.
     human_mask = human_masks[largest_centred_mask_index, :, :].astype(np.uint8)
-    overlay = cv2.addWeighted(input_image, 1.0,
+    overlay_vis = cv2.addWeighted(input_image, 1.0,
                               255 * np.tile(human_mask[:, :, None], [1, 1, 3]),
                               0.5, gamma=0)
 
-    return human_mask, overlay
+    return human_mask, overlay_vis
