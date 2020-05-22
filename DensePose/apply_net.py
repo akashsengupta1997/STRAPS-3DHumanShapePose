@@ -15,6 +15,7 @@ from detectron2.data.detection_utils import read_image
 from detectron2.engine.defaults import DefaultPredictor
 from detectron2.structures.boxes import BoxMode
 from detectron2.structures.instances import Instances
+from detectron2.utils.logger import setup_logger
 
 from densepose import add_densepose_config
 from densepose.vis.base import CompoundVisualizer
@@ -29,6 +30,9 @@ from densepose.vis.extractor import CompoundExtractor, create_extractor
 
 DOC = """Apply Net - a tool to print / visualize DensePose results
 """
+
+LOGGER_NAME = "apply_net"
+logger = logging.getLogger(LOGGER_NAME)
 
 _ACTION_REGISTRY: Dict[str, "Action"] = {}
 
@@ -302,6 +306,8 @@ def create_argument_parser() -> argparse.ArgumentParser:
 def main():
     parser = create_argument_parser()
     args = parser.parse_args()
+    global logger
+    logger = setup_logger(name=LOGGER_NAME)
     args.func(args)
 
 
