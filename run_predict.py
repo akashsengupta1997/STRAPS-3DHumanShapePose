@@ -2,6 +2,7 @@ import os
 import cv2
 
 from predict.predict_joints2D import predict_joints2D
+from predict.predict_silhouette_pointrend import predict_silhouette_pointrend
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
@@ -15,9 +16,14 @@ def predict_on_folder(input_folder):
         print("Predicting on:", fname)
         image = cv2.imread(os.path.join(input_folder, fname))
         keypoints, joints2D_vis = predict_joints2D(image)
+        point_rend_mask, point_rend_vis = predict_silhouette_pointrend(image)
+        plt.figure()
+        plt.subplot(221)
         plt.imshow(joints2D_vis)
-        plt.show()
-        plt.imshow(image)
+        plt.subplot(222)
+        plt.imshow(point_rend_mask)
+        plt.subplot(223)
+        plt.imshow(point_rend_vis)
         plt.show()
 
 
