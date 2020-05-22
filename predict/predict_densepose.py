@@ -78,19 +78,21 @@ def predict_densepose(input_image):
     print(outputs.pred_densepose)
     bboxes = outputs.pred_boxes.tensor.cpu().numpy()  # Multiple densepose predictions if there are multiple people in the image
     largest_centred_bbox_index = get_largest_centred_bounding_box(bboxes, orig_w, orig_h)  # Picks out centred person that is largest in the image.
-    iuv_arr = outputs.pred_densepose[largest_centred_bbox_index]
-    print(iuv_arr.shape)
+
+    bboxes_XYWH = BoxMode.convert(bboxes, BoxMode.XYXY_ABS, BoxMode.XYWH_ABS)
+    pred_densepose = outputs.pred_densepose.to_result(bboxes_XYWH)
+    print(pred_densepose)
     # iuv_arr = DensePoseResult.decode_png_data(*densepose)
 
     # Round bbox to int
-    largest_bbox = bboxes[largest_centred_bbox_index]
-    w1 = largest_bbox[0]
-    w2 = largest_bbox[0] + iuv_arr.shape[2]
-    h1 = largest_bbox[1]
-    h2 = largest_bbox[1] + iuv_arr.shape[1]
-
-    I_image = np.zeros((orig_h, orig_w))
-    I_image[int(h1):int(h2), int(w1):int(w2)] = iuv_arr[0, :, :]
+    # largest_bbox = bboxes[largest_centred_bbox_index]
+    # w1 = largest_bbox[0]
+    # w2 = largest_bbox[0] + iuv_arr.shape[2]
+    # h1 = largest_bbox[1]
+    # h2 = largest_bbox[1] + iuv_arr.shape[1]
+    #
+    # I_image = np.zeros((orig_h, orig_w))
+    # I_image[int(h1):int(h2), int(w1):int(w2)] = iuv_arr[0, :, :]
     # U_image = np.zeros((orig_h, orig_w))
     # U_image[int(h1):int(h2), int(w1):int(w2)] = iuv_arr[1, :, :]
     # V_image = np.zeros((orig_h, orig_w))
