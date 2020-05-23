@@ -72,7 +72,7 @@ class Renderer():
         if mesh_filename is not None:
             mesh.export(mesh_filename)
 
-        if angle and axis:
+        if angle is not None and axis is not None:
             R = trimesh.transformations.rotation_matrix(math.radians(angle), axis)
             mesh.apply_transform(R)
 
