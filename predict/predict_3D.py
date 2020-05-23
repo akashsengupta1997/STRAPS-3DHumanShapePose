@@ -165,7 +165,7 @@ def predict_3D(input,
             plt.margins(0, 0)
             plt.gca().xaxis.set_major_locator(plt.NullLocator())
             plt.gca().yaxis.set_major_locator(plt.NullLocator())
-            plt.savefig(os.path.join(input, 'verts_'+fname))
+            plt.savefig(os.path.join(input, 'verts_vis', 'verts_'+fname))
 
             if render_vis:
                 rend_img = wp_renderer.render(verts=pred_vertices, cam=pred_cam_wp, img=image)
@@ -175,10 +175,10 @@ def predict_3D(input,
                                                       axis=[1, 0, 0])
                 if not os.path.isdir(os.path.join(input, 'rend_vis')):
                     os.makedirs(os.path.join(input, 'rend_vis'))
-                cv2.imwrite(os.path.join(input, 'rend_'+fname), rend_img)
-                cv2.imwrite(os.path.join(input, 'reposed_'+fname), rend_reposed_img)
+                cv2.imwrite(os.path.join(input, 'rend_vis', 'rend_'+fname), rend_img)
+                cv2.imwrite(os.path.join(input, 'rend_vis', 'reposed_'+fname), rend_reposed_img)
             if save_proxy_vis:
                 if not os.path.isdir(os.path.join(input, 'proxy_vis')):
                     os.makedirs(os.path.join(input, 'proxy_vis'))
-                cv2.imwrite(os.path.join(input, 'silhouette_'+fname), silhouette_vis)
-                cv2.imwrite(os.path.join(input, 'joints2D_'+fname), joints2D_vis)
+                cv2.imwrite(os.path.join(input, 'proxy_vis', 'silhouette_'+fname), silhouette_vis)
+                cv2.imwrite(os.path.join(input, 'proxy_vis', 'joints2D_'+fname), joints2D_vis)
