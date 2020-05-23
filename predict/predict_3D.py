@@ -155,6 +155,8 @@ def predict_3D(input,
             pred_reposed_vertices = pred_reposed_vertices.cpu().detach().numpy()[0]
             pred_cam_wp = pred_cam_wp.cpu().detach().numpy()[0]
 
+            if not os.path.isdir(os.path.join(input, 'verts_vis')):
+                os.makedirs(os.path.join(input, 'verts_vis'))
             plt.figure()
             plt.imshow(image)
             plt.scatter(pred_vertices2d[:, 0], pred_vertices2d[:, 1], s=0.3)
@@ -171,9 +173,12 @@ def predict_3D(input,
                                                       cam=np.array([0.8, 0., -0.2]),
                                                       angle=180,
                                                       axis=[1, 0, 0])
-
+                if not os.path.isdir(os.path.join(input, 'rend_vis')):
+                    os.makedirs(os.path.join(input, 'rend_vis'))
                 cv2.imwrite(os.path.join(input, 'rend_'+fname), rend_img)
                 cv2.imwrite(os.path.join(input, 'reposed_'+fname), rend_reposed_img)
             if save_proxy_vis:
+                if not os.path.isdir(os.path.join(input, 'proxy_vis')):
+                    os.makedirs(os.path.join(input, 'proxy_vis'))
                 cv2.imwrite(os.path.join(input, 'silhouette_'+fname), silhouette_vis)
                 cv2.imwrite(os.path.join(input, 'joints2D_'+fname), joints2D_vis)
