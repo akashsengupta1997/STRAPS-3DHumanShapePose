@@ -149,10 +149,11 @@ def predict_3D(input,
                 pred_reposed_smpl_output = smpl(betas=pred_shape)
                 pred_reposed_vertices = pred_reposed_smpl_output.vertices
 
-                # Numpy-fying
-                pred_vertices = pred_vertices.cpu().detach().numpy()[0]
-                pred_reposed_vertices = pred_reposed_vertices.cpu().detach().numpy()[0]
-                pred_cam_wp = pred_cam_wp.cpu().detach().numpy()[0]
+            # Numpy-fying
+            pred_vertices = pred_vertices.cpu().detach().numpy()[0]
+            pred_vertices2d = pred_vertices2d.cpu().detach().numpy()[0]
+            pred_reposed_vertices = pred_reposed_vertices.cpu().detach().numpy()[0]
+            pred_cam_wp = pred_cam_wp.cpu().detach().numpy()[0]
 
             plt.figure()
             plt.imshow(image)
