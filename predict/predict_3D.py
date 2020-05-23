@@ -83,7 +83,8 @@ def predict_3D(input,
                regressor,
                device,
                silhouettes_from='densepose',
-               proxy_rep_input_wh=512):
+               proxy_rep_input_wh=512,
+               save_proxy_vis=True):
 
     # Set-up proxy representation predictors.
     joints2D_predictor, silhouette_predictor = setup_detectron2_predictors(silhouettes_from=silhouettes_from)
@@ -154,20 +155,10 @@ def predict_3D(input,
                                                   angle=180,
                                                   axis=[1, 0, 0])
 
-            # TODO saving
+            cv2.imwrite(os.path.join(input, 'rend_'+fname), rend_img)
+            cv2.imwrite(os.path.join(input, 'reposed_'+fname), rend_reposed_img)
+            if save_proxy_vis:
+                cv2.imwrite(os.path.join(input, 'silhouette_'+fname), silhouette_vis)
+                cv2.imwrite(os.path.join(input, 'joints2D_'+fname), joints2D_vis)
 
             # TODO try timing
-            plt.figure()
-            plt.subplot(231)
-            plt.imshow(joints2D_vis)
-            plt.subplot(232)
-            plt.imshow(silhouette)
-            plt.subplot(233)
-            plt.imshow(silhouette_vis)
-            plt.subplot(234)
-            plt.imshow(np.sum(proxy_rep, axis=0))
-            plt.subplot(235)
-            plt.imshow(rend_img)
-            plt.subplot(236)
-            plt.imshow(rend_reposed_img)
-            plt.show()
