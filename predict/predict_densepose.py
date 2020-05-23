@@ -45,16 +45,6 @@ def apply_colormap(image, vmin=None, vmax=None, cmap='viridis', cmap_seed=1):
     return vis
 
 
-def setup_config():
-    config_file = "DensePose/configs/densepose_rcnn_R_101_FPN_s1x.yaml"
-    cfg = get_cfg()
-    add_densepose_config(cfg)
-    cfg.merge_from_file(config_file)
-    cfg.MODEL.WEIGHTS = "DensePose/checkpoints/densepose_rcnn_R_101_fpn_s1x.pkl"
-    cfg.freeze()
-    return cfg
-
-
 def get_largest_centred_bounding_box(bboxes, orig_w, orig_h):
     """
     Given an array of bounding boxes, return the index of the largest + roughly-centred
@@ -83,10 +73,13 @@ def get_largest_centred_bounding_box(bboxes, orig_w, orig_h):
     return largest_centred_bbox_index
 
 
-def predict_densepose(input_image):
-    cfg = setup_config()
-    predictor = DefaultPredictor(cfg)
-
+def predict_densepose(input_image, predictor):
+    """
+    Predicts densepose output given a cropped and centred input image.
+    :param input_images: (wh, wh)
+    :param predictor: instance of detectron2 DefaultPredictor class, created with the
+    appropriate config file.
+    """
     orig_h, orig_w = input_image.shape[:2]
     outputs = predictor(input_image)["instances"]
     bboxes = outputs.pred_boxes.tensor.cpu()  # Multiple densepose predictions if there are multiple people in the image
@@ -112,7 +105,6 @@ def predict_densepose(input_image):
     # V_image[int(h1):int(h2), int(w1):int(w2)] = iuv_arr[2, :, :]
 
     vis_I_image = apply_colormap(I_image, vmin=0, vmax=24)
-    print(vis_I_image.dtype, input_image.dtype)
     vis_I_image = vis_I_image[:, :, :3]
     vis_I_image[I_image == 0, :] = np.zeros(3, dtype=np.uint8)
     overlay_vis = cv2.addWeighted(input_image,
@@ -120,6 +112,6 @@ def predict_densepose(input_image):
                                   vis_I_image,
                                   0.4,
                                   gamma=0)
-    print('DP', input_image.max(), vis_I_image.max(), input_image.min(), vis_I_image.min(), overlay_vis.max(), overlay_vis.min())
+
     return I_image, overlay_vis
 

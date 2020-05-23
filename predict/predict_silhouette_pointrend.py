@@ -3,24 +3,6 @@ import argparse
 import numpy as np
 import cv2
 
-from detectron2.config import get_cfg
-from detectron2.engine import DefaultPredictor
-
-from PointRend.point_rend import add_pointrend_config
-
-
-def setup_config():
-    """
-    Create configs and perform basic setups.
-    """
-    config_file = "PointRend/configs/InstanceSegmentation/pointrend_rcnn_R_50_FPN_3x_coco.yaml"
-    cfg = get_cfg()
-    add_pointrend_config(cfg)
-    cfg.merge_from_file(config_file)
-    cfg.MODEL.WEIGHTS = "PointRend/checkpoints/pointrend_rcnn_R_50_fpn.pkl"
-    cfg.freeze()
-    return cfg
-
 
 def get_largest_centred_mask(human_masks, orig_w, orig_h):
     """
@@ -54,14 +36,13 @@ def get_largest_centred_mask(human_masks, orig_w, orig_h):
     return largest_centred_mask_index
 
 
-def predict_silhouette_pointrend(input_image):
+def predict_silhouette_pointrend(input_image, predictor):
     """
     Predicts human silhouette (binary segmetnation) given a cropped and centred input image.
     :param input_images: (wh, wh)
+    :param predictor: instance of detectron2 DefaultPredictor class, created with the
+    appropriate config file.
     """
-    cfg = setup_config()
-    predictor = DefaultPredictor(cfg)
-
     orig_h, orig_w = input_image.shape[:2]
     outputs = predictor(input_image)['instances']  # Multiple silhouette predictions if there are multiple people in the image
     classes = outputs.pred_classes
@@ -73,5 +54,5 @@ def predict_silhouette_pointrend(input_image):
     overlay_vis = cv2.addWeighted(input_image, 1.0,
                               255 * np.tile(human_mask[:, :, None], [1, 1, 3]),
                               0.5, gamma=0)
-    print('PR', input_image.max(), human_mask.max(), input_image.min(), human_mask.min(), overlay_vis.max(), overlay_vis.min())
+
     return human_mask, overlay_vis

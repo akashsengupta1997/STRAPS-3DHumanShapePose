@@ -1,24 +1,6 @@
 import cv2
 import numpy as np
 
-from detectron2 import model_zoo
-from detectron2.engine import DefaultPredictor
-from detectron2.config import get_cfg
-
-
-def setup_config():
-    """
-    Create configs and perform basic setups.
-    """
-    config_file = "COCO-Keypoints/keypoint_rcnn_R_50_FPN_3x.yaml"
-    cfg = get_cfg()
-    cfg.merge_from_file(
-        model_zoo.get_config_file(config_file))
-    cfg.MODEL.ROI_HEADS.SCORE_THRESH_TEST = 0.7  # set threshold for this model
-    cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url(config_file)
-    cfg.freeze()
-    return cfg
-
 
 def get_largest_centred_bounding_box(bboxes, orig_w, orig_h):
     """
@@ -48,15 +30,14 @@ def get_largest_centred_bounding_box(bboxes, orig_w, orig_h):
     return largest_centred_bbox_index
 
 
-def predict_joints2D(input_image):
+def predict_joints2D(input_image, predictor):
     """
     Predicts 2D joints (17 2D joints in COCO convention along with prediction confidence)
     given a cropped and centred input image.
     :param input_images: (wh, wh)
+    :param predictor: instance of detectron2 DefaultPredictor class, created with the
+    appropriate config file.
     """
-    cfg = setup_config()
-    predictor = DefaultPredictor(cfg)
-
     image = np.copy(input_image)
     orig_h, orig_w = image.shape[:2]
     outputs = predictor(image)  # Multiple bboxes + keypoints predictions if there are multiple people in the image

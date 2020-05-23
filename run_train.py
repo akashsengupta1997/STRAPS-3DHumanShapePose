@@ -1,5 +1,3 @@
-import sys
-sys.path.insert(1, '/scratch/as2562/pytorch_indirect_learning')
 import os
 import torch
 import numpy as np
