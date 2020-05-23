@@ -89,7 +89,7 @@ def predict_3D(input,
     joints2D_predictor, silhouette_predictor = setup_detectron2_predictors(silhouettes_from=silhouettes_from)
 
     # Set-up SMPL model.
-    smpl = SMPL(config.SMPL_MODEL_DIR, batch_size=1)
+    smpl = SMPL(config.SMPL_MODEL_DIR, batch_size=1).to(device)
 
     # Set-up renderer for visualisation.
     wp_renderer = Renderer(resolution=(proxy_rep_input_wh, proxy_rep_input_wh))
