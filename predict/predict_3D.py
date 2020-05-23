@@ -150,7 +150,7 @@ def predict_3D(input,
             pred_cam_wp[1:] = pred_cam_wp[1:] / pred_cam_wp[0]  # Need to do this division because of different cam translation convention (described in my research diary)
             rend_img = wp_renderer.render(verts=pred_vertices, cam=pred_cam_wp, img=image)
             rend_reposed_img = wp_renderer.render(verts=pred_reposed_vertices,
-                                                  cam=np.array([0.8, 0., 0.2]),
+                                                  cam=np.array([0.8, 0., -0.2]),
                                                   angle=180,
                                                   axis=[1, 0, 0])
 
