@@ -142,7 +142,7 @@ def predict_3D(input,
             pred_vertices = pred_vertices.cpu().detach().numpy()[0]
             pred_reposed_vertices = pred_reposed_vertices.cpu().detach().numpy()[0]
             pred_cam_wp = pred_cam_wp.cpu().detach().numpy()[0]
-            proxy_rep = proxy_rep.cpu().detach().numpy()[0]
+            proxy_rep = proxy_rep.cpu().detach().numpy()[0]  # TODO comment out
 
             # TODO comment this out with newer models trained with translation before scaling
             pred_cam_wp[1:] = pred_cam_wp[1:] / pred_cam_wp[0]  # Need to do this division because of different cam translation convention (described in my research diary)

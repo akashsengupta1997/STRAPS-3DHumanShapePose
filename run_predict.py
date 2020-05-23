@@ -13,7 +13,7 @@ def main(input_path, checkpoint_path, device, silhouettes_from):
     print("Model Loaded. Weights from:", checkpoint_path)
     regressor.to(device)
     checkpoint = torch.load(checkpoint_path, map_location=device)
-    regressor.load_state_dict(checkpoint['best_model_state_dict'])
+    regressor.load_state_dict(checkpoint['model_state_dict'])
 
     predict_3D(input_path, regressor, device, silhouettes_from=silhouettes_from)
 
