@@ -151,9 +151,12 @@ def predict_3D(input,
             rend_img = wp_renderer.render(verts=pred_vertices, cam=pred_cam_wp, img=image)
             rend_reposed_img = wp_renderer.render(verts=pred_reposed_vertices,
                                                   cam=np.array([0.7, 0., 0.]),
-                                                  angle=np.pi,
-                                                  axis=np.array([1., 0., 0.]))
+                                                  angle=180,
+                                                  axis=[1, 0, 0])
 
+            # TODO saving
+
+            # TODO try timing
             plt.figure()
             plt.subplot(231)
             plt.imshow(joints2D_vis)
