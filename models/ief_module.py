@@ -54,7 +54,6 @@ class IEFModule(nn.Module):
         state = torch.cat([img_features, params_estimate], dim=1)
         for i in range(self.iterations):
             delta = self.ief_layers(state)
-            delta = delta * self.scaledown
             params_estimate += delta
             state = torch.cat([img_features, params_estimate], dim=1)
 
