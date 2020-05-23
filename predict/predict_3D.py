@@ -107,7 +107,6 @@ def predict_3D(input,
                                                     in_wh=proxy_rep_input_wh,
                                                     out_wh=config.REGRESSOR_IMG_WH)
             proxy_rep = proxy_rep[None, :, :, :]  # add batch dimension
-            print(proxy_rep.shape)
 
             # TODO predict 3D
 
