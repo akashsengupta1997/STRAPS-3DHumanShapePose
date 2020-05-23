@@ -30,4 +30,9 @@ if __name__ == '__main__':
     os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
+    # If you are running the script on a remote machine via ssh, you might need to use EGL
+    # to create an OpenGL context. If EGL is installed on the remote machine, uncommenting the
+    # following line should work.
+    # os.environ['PYOPENGL_PLATFORM'] = 'egl'
+
     main(args.input, args.checkpoint, device, args.silh_from)
