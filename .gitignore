@@ -137,3 +137,5 @@ dmypy.json
 info/*
 
 *.DS_Store*
+
+checkpoints/*
