@@ -121,28 +121,30 @@ def predict_3D(input,
             proxy_rep = torch.from_numpy(proxy_rep).float().to(device)
 
             # Predict 3D
-            pred_cam_wp, pred_pose, pred_shape = regressor(proxy_rep)
-            # Convert pred pose to rotation matrices
-            if pred_pose.shape[-1] == 24 * 3:
-                pred_pose_rotmats = batch_rodrigues(pred_pose.contiguous().view(-1, 3))
-                pred_pose_rotmats = pred_pose_rotmats.view(-1, 24, 3, 3)
-            elif pred_pose.shape[-1] == 24 * 6:
-                pred_pose_rotmats = rot6d_to_rotmat(pred_pose.contiguous()).view(-1, 24, 3, 3)
+            regressor.eval()
+            with torch.no_grad():
+                pred_cam_wp, pred_pose, pred_shape = regressor(proxy_rep)
+                # Convert pred pose to rotation matrices
+                if pred_pose.shape[-1] == 24 * 3:
+                    pred_pose_rotmats = batch_rodrigues(pred_pose.contiguous().view(-1, 3))
+                    pred_pose_rotmats = pred_pose_rotmats.view(-1, 24, 3, 3)
+                elif pred_pose.shape[-1] == 24 * 6:
+                    pred_pose_rotmats = rot6d_to_rotmat(pred_pose.contiguous()).view(-1, 24, 3, 3)
 
-            pred_smpl_output = smpl(body_pose=pred_pose_rotmats[:, 1:],
-                                    global_orient=pred_pose_rotmats[:, 0].unsqueeze(1),
-                                    betas=pred_shape,
-                                    pose2rot=False)
-            pred_vertices = pred_smpl_output.vertices
+                pred_smpl_output = smpl(body_pose=pred_pose_rotmats[:, 1:],
+                                        global_orient=pred_pose_rotmats[:, 0].unsqueeze(1),
+                                        betas=pred_shape,
+                                        pose2rot=False)
+                pred_vertices = pred_smpl_output.vertices
 
-            pred_reposed_smpl_output = smpl(betas=pred_shape)
-            pred_reposed_vertices = pred_reposed_smpl_output.vertices
+                pred_reposed_smpl_output = smpl(betas=pred_shape)
+                pred_reposed_vertices = pred_reposed_smpl_output.vertices
 
-            # Numpy-fying
-            pred_vertices = pred_vertices.cpu().detach().numpy()[0]
-            pred_reposed_vertices = pred_reposed_vertices.cpu().detach().numpy()[0]
-            pred_cam_wp = pred_cam_wp.cpu().detach().numpy()[0]
-            proxy_rep = proxy_rep.cpu().detach().numpy()[0]  # TODO comment out
+                # Numpy-fying
+                pred_vertices = pred_vertices.cpu().detach().numpy()[0]
+                pred_reposed_vertices = pred_reposed_vertices.cpu().detach().numpy()[0]
+                pred_cam_wp = pred_cam_wp.cpu().detach().numpy()[0]
+                proxy_rep = proxy_rep.cpu().detach().numpy()[0]  # TODO comment out
 
             # TODO comment this out with newer models trained with translation before scaling
             pred_cam_wp[1:] = pred_cam_wp[1:] / pred_cam_wp[0]  # Need to do this division because of different cam translation convention (described in my research diary)
