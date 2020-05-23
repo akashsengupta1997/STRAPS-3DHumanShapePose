@@ -15,7 +15,8 @@ def main(input_path, checkpoint_path, device, silhouettes_from):
     checkpoint = torch.load(checkpoint_path, map_location=device)
     regressor.load_state_dict(checkpoint['best_model_state_dict'])
 
-    predict_3D(input_path, regressor, device, silhouettes_from=silhouettes_from)
+    predict_3D(input_path, regressor, device, silhouettes_from=silhouettes_from,
+               save_proxy_vis=True, render_vis=True)
 
 
 if __name__ == '__main__':
@@ -35,6 +36,7 @@ if __name__ == '__main__':
     # to create an OpenGL context. If EGL is installed on the remote machine, uncommenting the
     # following line should work.
     # os.environ['PYOPENGL_PLATFORM'] = 'egl'
-    # If this still doesn't work, just disable rendering visualisation  # TODO add this option
+    # If this still doesn't work, just disable rendering visualisation by setting render_vis
+    # argument in predict_3D to False.
 
     main(args.input, args.checkpoint, device, args.silh_from)

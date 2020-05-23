@@ -21,6 +21,8 @@ from models.smpl_official import SMPL
 from renderers.weak_perspective_pyrender_renderer import Renderer
 
 from utils.image_utils import pad_to_square
+from utils.cam_utils import orthographic_project_torch
+from utils.joints2d_utils import undo_keypoint_normalisation
 from utils.label_conversions import convert_multiclass_to_binary_labels, \
     convert_2Djoints_to_gaussian_heatmaps
 from utils.rigid_transform_utils import rot6d_to_rotmat
@@ -84,7 +86,8 @@ def predict_3D(input,
                device,
                silhouettes_from='densepose',
                proxy_rep_input_wh=512,
-               save_proxy_vis=True):
+               save_proxy_vis=True,
+               render_vis=True):
 
     # Set-up proxy representation predictors.
     joints2D_predictor, silhouette_predictor = setup_detectron2_predictors(silhouettes_from=silhouettes_from)
@@ -125,6 +128,8 @@ def predict_3D(input,
             regressor.eval()
             with torch.no_grad():
                 pred_cam_wp, pred_pose, pred_shape = regressor(proxy_rep)
+                # TODO comment this out with newer models trained with translation before scaling
+                pred_cam_wp[1:] = pred_cam_wp[1:] / pred_cam_wp[0]  # Need to do this division because of different cam translation convention (described in my research diary)
                 # Convert pred pose to rotation matrices
                 if pred_pose.shape[-1] == 24 * 3:
                     pred_pose_rotmats = batch_rodrigues(pred_pose.contiguous().view(-1, 3))
@@ -137,6 +142,9 @@ def predict_3D(input,
                                         betas=pred_shape,
                                         pose2rot=False)
                 pred_vertices = pred_smpl_output.vertices
+                pred_vertices2d = orthographic_project_torch(pred_vertices, pred_cam_wp)
+                pred_vertices2d = undo_keypoint_normalisation(pred_vertices2d,
+                                                              proxy_rep_input_wh)
 
                 pred_reposed_smpl_output = smpl(betas=pred_shape)
                 pred_reposed_vertices = pred_reposed_smpl_output.vertices
@@ -145,20 +153,28 @@ def predict_3D(input,
                 pred_vertices = pred_vertices.cpu().detach().numpy()[0]
                 pred_reposed_vertices = pred_reposed_vertices.cpu().detach().numpy()[0]
                 pred_cam_wp = pred_cam_wp.cpu().detach().numpy()[0]
-                proxy_rep = proxy_rep.cpu().detach().numpy()[0]  # TODO comment out
 
-            # TODO comment this out with newer models trained with translation before scaling
-            pred_cam_wp[1:] = pred_cam_wp[1:] / pred_cam_wp[0]  # Need to do this division because of different cam translation convention (described in my research diary)
-            rend_img = wp_renderer.render(verts=pred_vertices, cam=pred_cam_wp, img=image)
-            rend_reposed_img = wp_renderer.render(verts=pred_reposed_vertices,
-                                                  cam=np.array([0.8, 0., -0.2]),
-                                                  angle=180,
-                                                  axis=[1, 0, 0])
+            plt.figure()
+            plt.imshow(image)
+            plt.scatter(pred_vertices2d[0, :, 0],
+                        pred_vertices2d[0, :, 1],
+                        s=0.3)
+            plt.gca().set_axis_off()
+            plt.subplots_adjust(top=1, bottom=0, right=1, left=0, hspace=0, wspace=0)
+            plt.margins(0, 0)
+            plt.gca().xaxis.set_major_locator(plt.NullLocator())
+            plt.gca().yaxis.set_major_locator(plt.NullLocator())
+            plt.savefig(os.path.join(input, 'verts_'+fname))
 
-            cv2.imwrite(os.path.join(input, 'rend_'+fname), rend_img)
-            cv2.imwrite(os.path.join(input, 'reposed_'+fname), rend_reposed_img)
+            if render_vis:
+                rend_img = wp_renderer.render(verts=pred_vertices, cam=pred_cam_wp, img=image)
+                rend_reposed_img = wp_renderer.render(verts=pred_reposed_vertices,
+                                                      cam=np.array([0.8, 0., -0.2]),
+                                                      angle=180,
+                                                      axis=[1, 0, 0])
+
+                cv2.imwrite(os.path.join(input, 'rend_'+fname), rend_img)
+                cv2.imwrite(os.path.join(input, 'reposed_'+fname), rend_reposed_img)
             if save_proxy_vis:
                 cv2.imwrite(os.path.join(input, 'silhouette_'+fname), silhouette_vis)
                 cv2.imwrite(os.path.join(input, 'joints2D_'+fname), joints2D_vis)
-
-            # TODO try timing
