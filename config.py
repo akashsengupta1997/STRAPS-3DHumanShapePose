@@ -2,7 +2,7 @@
 # SMPL stuff
 SMPL_MODEL_DIR = 'info/smpl'
 SMPL_FACES_PATH = 'info/smpl_faces.npy'
-SMPL_MEAN_PARAMS_PATH = 'info/smpl_mean_params.npz'
+SMPL_MEAN_PARAMS_PATH = 'info/neutral_smpl_mean_params_6dpose.npz'
 J_REGRESSOR_EXTRA = 'info/J_regressor_extra.npy'
 COCOPLUS_REGRESSOR = 'info/cocoplus_regressor.npy'
 H36M_REGRESSOR = 'info/J_regressor_h36m.npy'
