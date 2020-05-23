@@ -157,9 +157,7 @@ def predict_3D(input,
 
             plt.figure()
             plt.imshow(image)
-            plt.scatter(pred_vertices2d[0, :, 0],
-                        pred_vertices2d[0, :, 1],
-                        s=0.3)
+            plt.scatter(pred_vertices2d[:, 0], pred_vertices2d[:, 1], s=0.3)
             plt.gca().set_axis_off()
             plt.subplots_adjust(top=1, bottom=0, right=1, left=0, hspace=0, wspace=0)
             plt.margins(0, 0)
