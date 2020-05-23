@@ -70,7 +70,7 @@ def create_proxy_representation(silhouette,
     heatmaps = convert_2Djoints_to_gaussian_heatmaps(joints2D.astype(np.int16),
                                                      out_wh)
     proxy_rep = np.concatenate([silhouette[:, :, None], heatmaps], axis=-1)
-    proxy_rep = np.transpose(proxy_rep, [2, 0, 1])
+    proxy_rep = np.transpose(proxy_rep, [2, 0, 1])  # (C, out_wh, out_WH)
 
     return proxy_rep
 
@@ -106,6 +106,8 @@ def predict_3D(input,
             proxy_rep = create_proxy_representation(silhouette, joints2D,
                                                     in_wh=proxy_rep_input_wh,
                                                     out_wh=config.REGRESSOR_IMG_WH)
+            proxy_rep = proxy_rep[None, :, :, :]  # add batch dimension
+            print(proxy_rep.shape)
 
             # TODO predict 3D
 
@@ -117,5 +119,5 @@ def predict_3D(input,
             plt.subplot(223)
             plt.imshow(silhouette_vis)
             plt.subplot(224)
-            plt.imshow(np.sum(proxy_rep, axis=-1))
+            plt.imshow(np.sum(proxy_rep, axis=1))
             plt.show()
