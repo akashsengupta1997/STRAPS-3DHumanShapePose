@@ -1,30 +1,24 @@
 import os
 import cv2
-import matplotlib.pyplot as plt
 import numpy as np
 
 
-def pad_to_square_directory(input_dir_path, ext='.png'):
+def pad_to_square(image):
     """
-    Pad all images in input directory to square shape.
+    Pad image to square shape.
     """
-    image_fnames = [f for f in sorted(os.listdir((input_dir_path))) if f.endswith(ext)]
-    for fname in image_fnames:
-        print(fname)
-        image = cv2.imread(os.path.join(input_dir_path, fname))
-        height, width = image.shape[:2]
+    height, width = image.shape[:2]
 
-        if width < height:
-            border_width = (height - width) // 2
-            image = cv2.copyMakeBorder(image, 0, 0, border_width, border_width,
-                                       cv2.BORDER_CONSTANT, value=0)
-        else:
-            border_width = (width - height) // 2
-            image = cv2.copyMakeBorder(image, border_width, border_width, 0, 0,
-                                       cv2.BORDER_CONSTANT, value=0)
+    if width < height:
+        border_width = (height - width) // 2
+        image = cv2.copyMakeBorder(image, 0, 0, border_width, border_width,
+                                   cv2.BORDER_CONSTANT, value=0)
+    else:
+        border_width = (width - height) // 2
+        image = cv2.copyMakeBorder(image, border_width, border_width, 0, 0,
+                                   cv2.BORDER_CONSTANT, value=0)
 
-        cv2.imwrite(os.path.join(input_dir_path, fname), image)
-
+    return image
 
 def convert_bbox_corners_to_centre_hw(bbox_corners):
     """

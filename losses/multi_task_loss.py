@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import numpy as np
 
+import config
 
 class HomoscedasticUncertaintyWeightedMultiTaskLoss(nn.Module):
     """
@@ -13,14 +14,12 @@ class HomoscedasticUncertaintyWeightedMultiTaskLoss(nn.Module):
                  losses_on,
                  init_loss_weights=None,
                  reduction='mean',
-                 img_wh=None,
                  eps=1e-6):
         """
         :param losses_on: List of outputs to apply losses on.
         Subset of ['verts', 'joints2D', 'joints3D', 'pose_params', 'shape_params'].
         :param init_loss_weights: Initial multi-task loss weights.
         :param reduction: 'mean' or 'sum'
-        :param img_wh: input width/height
         :param eps: small constant
         """
         super(HomoscedasticUncertaintyWeightedMultiTaskLoss, self).__init__()
@@ -61,7 +60,6 @@ class HomoscedasticUncertaintyWeightedMultiTaskLoss(nn.Module):
         if 'joints2D' in losses_on:
             self.joints2D_log_var.requires_grad = True
             self.joints2D_loss = nn.MSELoss(reduction=reduction)
-            self.img_wh = img_wh
         if 'joints3D' in losses_on:
             self.joints3D_log_var.requires_grad = True
             self.joints3D_loss = nn.MSELoss(reduction=reduction)
@@ -91,7 +89,7 @@ class HomoscedasticUncertaintyWeightedMultiTaskLoss(nn.Module):
                 joints2D_label = joints2D_label[vis, :]
                 joints2D_pred = joints2D_pred[vis, :]
 
-            joints2D_label = (2.0*joints2D_label) / self.img_wh - 1.0  # normalising j2d label
+            joints2D_label = (2.0*joints2D_label) / config.REGRESSOR_IMG_WH - 1.0  # normalising j2d label
             joints2D_loss = self.joints2D_loss(joints2D_pred, joints2D_label)
             total_loss += joints2D_loss * torch.exp(-self.joints2D_log_var) + self.joints2D_log_var
             loss_dict['joints2D'] = joints2D_loss * torch.exp(-self.joints2D_log_var)

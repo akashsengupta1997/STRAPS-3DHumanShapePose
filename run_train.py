@@ -40,14 +40,13 @@ print("ResNet layers:", resnet_layers)
 print("IEF Num iters:", ief_iters)
 
 # ----------------------- Hyperparameters -----------------------
-img_wh = 256
 num_epochs = 1000
 batch_size = 140
 lr = 0.0001
 epochs_per_save = 10
 print("\nBatch size:", batch_size)
 print("LR:", lr)
-print("Image width/height:", img_wh)
+print("Image width/height:", config.REGRESSOR_IMG_WH)
 
 # ----------------------- Loss settings -----------------------
 losses_on = ['verts', 'shape_params', 'pose_params', 'joints2D', 'joints3D']
@@ -113,7 +112,7 @@ smpl_model = SMPL(config.SMPL_MODEL_DIR,
 mean_cam_t = np.array([0., 0.2, 42.])
 mean_cam_t = torch.from_numpy(mean_cam_t).float().to(device)
 mean_cam_t = mean_cam_t[None, :].expand(batch_size, -1)
-cam_K = get_intrinsics_matrix(img_wh, img_wh, config.FOCAL_LENGTH)
+cam_K = get_intrinsics_matrix(config.REGRESSOR_IMG_WH, config.REGRESSOR_IMG_WH, config.FOCAL_LENGTH)
 cam_K = torch.from_numpy(cam_K.astype(np.float32)).to(device)
 cam_K = cam_K[None, :, :].expand(batch_size, -1, -1)
 cam_R = torch.eye(3).to(device)
@@ -121,7 +120,7 @@ cam_R = cam_R[None, :, :].expand(batch_size, -1, -1)
 nmr_parts_renderer = NMRRenderer(batch_size,
                                  cam_K,
                                  cam_R,
-                                 img_wh,
+                                 config.REGRESSOR_IMG_WH,
                                  rend_parts_seg=True)
 
 regressor.to(device)
@@ -192,8 +191,7 @@ print(proxy_rep_augment_params)
 # ----------------------- Loss -----------------------
 criterion = HomoscedasticUncertaintyWeightedMultiTaskLoss(losses_on,
                                                           init_loss_weights=init_loss_weights,
-                                                          reduction='mean',
-                                                          img_wh=img_wh)
+                                                          reduction='mean')
 criterion.to(device)
 
 # ----------------------- Optimiser -----------------------
@@ -221,7 +219,6 @@ train_synthetic_otf_rendering(device=device,
                               optimiser=optimiser,
                               batch_size=batch_size,
                               num_epochs=num_epochs,
-                              img_wh=img_wh,
                               smpl_augment_params=smpl_augment_params,
                               cam_augment_params=cam_augment_params,
                               bbox_augment_params=bbox_augment_params,

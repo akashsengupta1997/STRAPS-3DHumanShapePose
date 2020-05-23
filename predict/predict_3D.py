@@ -1,5 +1,6 @@
 import os
 import cv2
+import numpy as np
 
 from detectron2.config import get_cfg
 from detectron2 import model_zoo
@@ -8,13 +9,22 @@ from detectron2.engine import DefaultPredictor
 from PointRend.point_rend import add_pointrend_config
 from DensePose.densepose import add_densepose_config
 
+import config
+
 from predict.predict_joints2D import predict_joints2D
 from predict.predict_silhouette_pointrend import predict_silhouette_pointrend
 from predict.predict_densepose import predict_densepose
+
+from utils.image_utils import pad_to_square
+from utils.label_conversions import convert_multiclass_to_binary_labels, \
+    convert_2Djoints_to_gaussian_heatmaps
+
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 
+# TODO pre-processing step (pad to square)
+# TODO 3D predict
 
 def setup_detectron2_predictors(silhouettes_from='densepose'):
     # Keypoint-RCNN
@@ -48,7 +58,27 @@ def setup_detectron2_predictors(silhouettes_from='densepose'):
     return joints2D_predictor, silhouette_predictor
 
 
-def predict_3D(input, regressor, silhouettes_from='densepose'):
+def create_proxy_representation(silhouette,
+                                joints2D,
+                                in_wh,
+                                out_wh):
+    silhouette = cv2.resize(silhouette, (out_wh, out_wh),
+                            interpolation=cv2.INTER_NEAREST)
+    joints2D = joints2D[:, :2]
+    joints2D = joints2D * np.array([out_wh / float(in_wh),
+                                    out_wh / float(in_wh)])
+    heatmaps = convert_2Djoints_to_gaussian_heatmaps(joints2D.astype(np.int16),
+                                                     out_wh)
+    proxy_rep = np.concatenate([silhouette[:, :, None], heatmaps], axis=-1)
+    proxy_rep = np.transpose(proxy_rep, [2, 0, 1])
+
+    return proxy_rep
+
+
+def predict_3D(input,
+               regressor,
+               silhouettes_from='densepose',
+               proxy_rep_input_wh=512):
 
     # Set-up proxy representation predictors
     joints2D_predictor, silhouette_predictor = setup_detectron2_predictors(silhouettes_from=silhouettes_from)
@@ -59,13 +89,25 @@ def predict_3D(input, regressor, silhouettes_from='densepose'):
         for fname in image_fnames:
             print("Predicting on:", fname)
             image = cv2.imread(os.path.join(input, fname))
-            keypoints, joints2D_vis = predict_joints2D(image, joints2D_predictor)
+            # Pre-process for 2D detectors
+            image = pad_to_square(image)
+            image = cv2.resize(image, (proxy_rep_input_wh, proxy_rep_input_wh),
+                               interpolation=cv2.INTER_LINEAR)
+            # Predict 2D
+            joints2D, joints2D_vis = predict_joints2D(image, joints2D_predictor)
             if silhouettes_from == 'pointrend':
                 silhouette, silhouette_vis = predict_silhouette_pointrend(image,
                                                                           silhouette_predictor)
             elif silhouettes_from == 'densepose':
                 silhouette, silhouette_vis = predict_densepose(image, silhouette_predictor)
-                # silhouette =
+                silhouette = convert_multiclass_to_binary_labels(silhouette)
+
+            # Create proxy representation
+            proxy_rep = create_proxy_representation(silhouette, joints2D,
+                                                    in_wh=proxy_rep_input_wh,
+                                                    out_wh=config.REGRESSOR_IMG_WH)
+
+            # TODO predict 3D
 
             plt.figure()
             plt.subplot(221)
@@ -74,4 +116,6 @@ def predict_3D(input, regressor, silhouettes_from='densepose'):
             plt.imshow(silhouette)
             plt.subplot(223)
             plt.imshow(silhouette_vis)
+            plt.subplot(224)
+            plt.imshow(np.sum(proxy_rep, axis=-1))
             plt.show()

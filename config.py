@@ -14,6 +14,7 @@ SYNTHETIC_TRAINING_NPZ = ''  # TODO training npz
 
 # ------------------------ Constants ------------------------
 FOCAL_LENGTH = 5000.
+REGRESSOR_IMG_WH = 256
 
 # ------------------------ Joint label conventions ------------------------
 # The SMPL model (im smpl_official.py) returns a large superset of joints.

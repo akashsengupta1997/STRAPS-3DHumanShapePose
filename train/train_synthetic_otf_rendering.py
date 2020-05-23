@@ -34,7 +34,6 @@ def train_synthetic_otf_rendering(device,
                                   optimiser,
                                   batch_size,
                                   num_epochs,
-                                  img_wh,
                                   smpl_augment_params,
                                   cam_augment_params,
                                   bbox_augment_params,
@@ -88,7 +87,7 @@ def train_synthetic_otf_rendering(device,
     # Instantiate metrics tracker.
     metrics_tracker = TrainingLossesAndMetricsTracker(losses_to_track=losses_to_track,
                                                       metrics_to_track=metrics_to_track,
-                                                      img_wh=img_wh,
+                                                      img_wh=config.REGRESSOR_IMG_WH,
                                                       log_path=log_path,
                                                       load_logs=load_logs,
                                                       current_epoch=current_epoch)
@@ -168,7 +167,7 @@ def train_synthetic_otf_rendering(device,
                         orig_scale_factor=bbox_augment_params['mean_scale_factor'],
                         delta_scale_range=bbox_augment_params['delta_scale_range'],
                         delta_centre_range=bbox_augment_params['delta_centre_range'])
-                    resized_input, resized_joints2D = batch_resize(all_cropped_segs, all_cropped_joints2D, img_wh)
+                    resized_input, resized_joints2D = batch_resize(all_cropped_segs, all_cropped_joints2D, config.REGRESSOR_IMG_WH)
                     input = torch.from_numpy(resized_input).float().to(device)
                     target_joints2d_coco = torch.from_numpy(resized_joints2D).float().to(device)
 
@@ -181,7 +180,7 @@ def train_synthetic_otf_rendering(device,
                 input = convert_multiclass_to_binary_labels_torch(input)
                 input = input.unsqueeze(1)
                 j2d_heatmaps = convert_2Djoints_to_gaussian_heatmaps_torch(target_joints2d_coco_input,
-                                                                           img_wh)
+                                                                           config.REGRESSOR_IMG_WH)
                 input = torch.cat([input, j2d_heatmaps], dim=1)
 
             # ---------------- FORWARD PASS ----------------
@@ -215,7 +214,7 @@ def train_synthetic_otf_rendering(device,
                                             dim=1)
             # Check joints visibility
             target_joints2d_vis_coco = check_joints2d_visibility_torch(target_joints2d_coco,
-                                                                       img_wh)
+                                                                       config.REGRESSOR_IMG_WH)
 
             pred_dict_for_loss = {'joints2D': pred_joints2d_coco,
                                   'verts': pred_vertices,
@@ -288,7 +287,7 @@ def train_synthetic_otf_rendering(device,
                         delta_centre_range=None)
                     resized_input, resized_joints2D = batch_resize(all_cropped_segs,
                                                                    all_cropped_joints2D,
-                                                                   img_wh)
+                                                                   config.REGRESSOR_IMG_WH)
                     input = torch.from_numpy(resized_input).float().to(device)
                     target_joints2d_coco = torch.from_numpy(resized_joints2D).float().to(device)
 
@@ -296,7 +295,7 @@ def train_synthetic_otf_rendering(device,
                 input = convert_multiclass_to_binary_labels_torch(input)
                 input = input.unsqueeze(1)
                 j2d_heatmaps = convert_2Djoints_to_gaussian_heatmaps_torch(target_joints2d_coco,
-                                                                           img_wh)
+                                                                           config.REGRESSOR_IMG_WH)
                 input = torch.cat([input, j2d_heatmaps], dim=1)
 
                 # ---------------- FORWARD PASS ----------------
@@ -328,7 +327,7 @@ def train_synthetic_otf_rendering(device,
                 target_pose_rotmats = target_pose_rotmats.view(-1, 24, 3, 3)
 
                 # Check joints visibility
-                target_joints2d_vis_coco = check_joints2d_visibility_torch(target_joints2d_coco, img_wh)
+                target_joints2d_vis_coco = check_joints2d_visibility_torch(target_joints2d_coco, config.REGRESSOR_IMG_WH)
 
                 pred_dict_for_loss = {'joints2D': pred_joints2d_coco,
                                       'verts': pred_vertices,

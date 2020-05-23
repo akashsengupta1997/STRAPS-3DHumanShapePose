@@ -1,10 +1,8 @@
 import os
 import cv2
 
-from predict.predict import predict_3D
+from predict.predict_3D import predict_3D
 
-# TODO pre-processing step (pad to square)
-# TODO 3D predict
 
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"  # see issue #152
 os.environ["CUDA_VISIBLE_DEVICES"] = "1"
