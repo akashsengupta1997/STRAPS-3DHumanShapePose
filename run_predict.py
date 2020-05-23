@@ -10,7 +10,7 @@ def main(input_path, checkpoint_path, device, silhouettes_from):
                                      resnet_layers=18,
                                      ief_iters=3)
 
-    print("\nModel Loaded. ",'Weights from:', checkpoint_path)
+    print("Model Loaded. Weights from:", checkpoint_path)
     regressor.to(device)
     checkpoint = torch.load(checkpoint_path, map_location=device)
     regressor.load_state_dict(checkpoint['best_model_state_dict'])
@@ -23,8 +23,11 @@ if __name__ == '__main__':
     parser.add_argument('--input', type=str, help='Path to input image/folder of images.')
     parser.add_argument('--checkpoint', type=str, help='Path to model checkpoint')
     parser.add_argument('--silh_from', choices=['densepose', 'pointrend'])
+    parser.add_argument('--gpu', default='0')
     args = parser.parse_args()
 
+    os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"  # see issue #152
+    os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu
     device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
 
     main(args.input, args.checkpoint, device, args.silh_from)
