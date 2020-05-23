@@ -28,7 +28,7 @@ from utils.label_conversions import convert_multiclass_to_binary_labels, \
 from utils.rigid_transform_utils import rot6d_to_rotmat
 
 import matplotlib
-matplotlib.use('TkAgg')
+matplotlib.use('agg')
 import matplotlib.pyplot as plt
 
 
