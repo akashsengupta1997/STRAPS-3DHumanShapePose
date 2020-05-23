@@ -119,5 +119,5 @@ def predict_3D(input,
             plt.subplot(223)
             plt.imshow(silhouette_vis)
             plt.subplot(224)
-            plt.imshow(np.sum(proxy_rep[0], axis=1))
+            plt.imshow(np.sum(proxy_rep[0], axis=0))
             plt.show()
