@@ -54,18 +54,16 @@ init_loss_weights = {'verts': 1.0, 'joints2D': 0.1, 'pose_params': 0.1, 'shape_p
                      'joints3D': 1.0}  # Initial loss weights - these will be updated during training.
 losses_to_track = losses_on
 normalise_joints_before_loss = True
-use_homosced_weighted_loss = True
 silhouette_loss = ('silhouette' in losses_on)
 
 print("\nLosses on:", losses_on)
 print("Loss weights:", init_loss_weights)
-print("Use homoscedastic uncertainty weighting:", use_homosced_weighted_loss)
 
 # ----------------------- Metrics settings -----------------------
 metrics_to_track = ['pves', 'pves_sc', 'pves_pa', 'pve-ts', 'pve-ts_sc', 'mpjpes', 'mpjpes_sc',
                     'mpjpes_pa', 'shape_mses', 'pose_mses', 'joints2D_l2es']
 save_val_metrics = ['pves_pa', 'mpjpes_pa']
-# ^ Main metrics which asses model quality - used to determine when to save model weights.
+# ^ Main metrics which asses model validation performance - used to determine when to save model weights.
 print("\nMetrics:", metrics_to_track)
 print("Save val metrics:", save_val_metrics)
 
@@ -204,8 +202,7 @@ if checkpoint_path is not None:
     checkpoint = torch.load(checkpoint_path, map_location=device)
     regressor.load_state_dict(checkpoint['model_state_dict'])
     optimiser.load_state_dict(checkpoint['optimiser_state_dict'])
-    if use_homosced_weighted_loss:
-        criterion.load_state_dict(checkpoint['criterion_state_dict'])
+    criterion.load_state_dict(checkpoint['criterion_state_dict'])
 else:
     checkpoint = None
 
