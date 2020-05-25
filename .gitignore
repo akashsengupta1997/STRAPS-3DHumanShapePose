@@ -139,3 +139,5 @@ info/*
 *.DS_Store*
 
 checkpoints/*
+
+data/*.npz

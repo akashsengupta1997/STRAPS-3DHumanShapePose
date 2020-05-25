@@ -40,12 +40,12 @@ class NMRRenderer(nn.Module):
         self.register_buffer('faces', faces)
 
         if rend_parts_seg:
-            textures = np.load(config.VERTEX_TEXTURE_FILE)
+            textures = np.load(config.VERTEX_TEXTURE_PATH)
             textures = torch.from_numpy(textures).float()
             textures = textures.expand(batch_size, -1, -1, -1, -1, -1)
             self.register_buffer('textures', textures)
 
-            cube_parts = np.load(config.CUBE_PARTS_FILE)
+            cube_parts = np.load(config.CUBE_PARTS_PATH)
             cube_parts = torch.from_numpy(cube_parts).float()
             self.register_buffer('cube_parts', cube_parts)
         else:

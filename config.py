@@ -3,14 +3,11 @@
 SMPL_MODEL_DIR = 'info/smpl'
 SMPL_FACES_PATH = 'info/smpl_faces.npy'
 SMPL_MEAN_PARAMS_PATH = 'info/neutral_smpl_mean_params_6dpose.npz'
-J_REGRESSOR_EXTRA = 'info/J_regressor_extra.npy'
-COCOPLUS_REGRESSOR = 'info/cocoplus_regressor.npy'
-H36M_REGRESSOR = 'info/J_regressor_h36m.npy'
-VERTEX_TEXTURE_FILE = 'info/vertex_texture.npy'
-CUBE_PARTS_FILE = 'info/cube_parts.npy'
-
-# Data
-SYNTHETIC_TRAINING_NPZ = ''  # TODO training npz
+J_REGRESSOR_EXTRA_PATH = 'info/J_regressor_extra.npy'
+COCOPLUS_REGRESSOR_PATH = 'info/cocoplus_regressor.npy'
+H36M_REGRESSOR_PATH = 'info/J_regressor_h36m.npy'
+VERTEX_TEXTURE_PATH = 'info/vertex_texture.npy'
+CUBE_PARTS_PATH = 'info/cube_parts.npy'
 
 # ------------------------ Constants ------------------------
 FOCAL_LENGTH = 5000.

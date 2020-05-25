@@ -71,9 +71,9 @@ print("Save val metrics:", save_val_metrics)
 
 # ----------------------- Paths -----------------------
 # Path to npz with training data.
-train_path = "/scratch/as2562/datasets/on_the_fly_smpl/amass_h36m_up3d_3dpw_train.npz"
+train_path = 'data/amass_h36m_up3d_3dpw_train.npz'  # TODO change to file without h36m
 # Path to npz with validation data.
-val_path = "/scratch/as2562/datasets/on_the_fly_smpl/h36m_up3d_3dpw_val.npz"
+val_path = 'data/h36m_up3d_3dpw_val.npz'  # TODO change to file without h36m
 
 # Path to save model weights to (without .tar extension).
 model_save_path = os.path.join('./checkpoints/model_checkpoint')
