@@ -35,7 +35,7 @@ Download the required additional files [here](https://drive.google.com/drive/fol
     │   ├── neutral_smpl_mean_params_6dpose.npz   # Mean gender-neutral SMPL parameters
     │   ├── smpl_faces.npy                        # SMPL mesh faces
     │   ├── cube_parts.npy
-    │   └── vertex_texture.npy                    # etc.
+    │   └── vertex_texture.npy                    
     └── ...
 
 ### Model checkpoints
