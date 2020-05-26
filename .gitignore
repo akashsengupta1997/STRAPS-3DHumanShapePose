@@ -134,7 +134,9 @@ dmypy.json
 .idea/*
 
 # Additional needed files
-info/*
+additional/*
+# Except the readme
+!additional/README.md
 
 *.DS_Store*
 

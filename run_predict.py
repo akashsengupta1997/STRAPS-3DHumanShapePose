@@ -10,7 +10,7 @@ def main(input_path, checkpoint_path, device, silhouettes_from):
                                      resnet_layers=18,
                                      ief_iters=3)
 
-    print("Model Loaded. Weights from:", checkpoint_path)
+    print("Regressor loaded. Weights from:", checkpoint_path)
     regressor.to(device)
     checkpoint = torch.load(checkpoint_path, map_location=device)
     regressor.load_state_dict(checkpoint['best_model_state_dict'])

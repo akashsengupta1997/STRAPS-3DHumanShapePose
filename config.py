@@ -1,13 +1,13 @@
 # ------------------------ Paths ------------------------
-# SMPL stuff
-SMPL_MODEL_DIR = 'info/smpl'
-SMPL_FACES_PATH = 'info/smpl_faces.npy'
-SMPL_MEAN_PARAMS_PATH = 'info/neutral_smpl_mean_params_6dpose.npz'
-J_REGRESSOR_EXTRA_PATH = 'info/J_regressor_extra.npy'
-COCOPLUS_REGRESSOR_PATH = 'info/cocoplus_regressor.npy'
-H36M_REGRESSOR_PATH = 'info/J_regressor_h36m.npy'
-VERTEX_TEXTURE_PATH = 'info/vertex_texture.npy'
-CUBE_PARTS_PATH = 'info/cube_parts.npy'
+# Additional files
+SMPL_MODEL_DIR = 'additional/smpl'
+SMPL_FACES_PATH = 'additional/smpl_faces.npy'
+SMPL_MEAN_PARAMS_PATH = 'additional/neutral_smpl_mean_params_6dpose.npz'
+J_REGRESSOR_EXTRA_PATH = 'additional/J_regressor_extra.npy'
+COCOPLUS_REGRESSOR_PATH = 'additional/cocoplus_regressor.npy'
+H36M_REGRESSOR_PATH = 'additional/J_regressor_h36m.npy'
+VERTEX_TEXTURE_PATH = 'additional/vertex_texture.npy'
+CUBE_PARTS_PATH = 'additional/cube_parts.npy'
 
 # ------------------------ Constants ------------------------
 FOCAL_LENGTH = 5000.
