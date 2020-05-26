@@ -141,5 +141,7 @@ additional/*
 *.DS_Store*
 
 checkpoints/*
+# Except the readme
+! checkpoints/README.md
 
 data/*.npz
