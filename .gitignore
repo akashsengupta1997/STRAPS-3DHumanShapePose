@@ -136,12 +136,13 @@ dmypy.json
 # Additional needed files
 additional/*
 # Except the readme
-! additional/README.md
+!additional/README.md
 
 *.DS_Store*
 
+# Model checkpoints
 checkpoints/*
 # Except the readme
-! checkpoints/README.md
+!checkpoints/README.md
 
 data/*.npz
