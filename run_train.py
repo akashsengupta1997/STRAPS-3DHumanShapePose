@@ -93,7 +93,7 @@ print("Model save path:", model_save_path)
 print("Log save path:", log_path)
 
 # ----------------------- Dataset -----------------------
-train_dataset = SyntheticTrainingDataset(npz_path=train_path, params_from='not_amass')
+train_dataset = SyntheticTrainingDataset(npz_path=train_path, params_from='all')
 val_dataset = SyntheticTrainingDataset(npz_path=val_path, params_from='all')
 train_val_monitor_datasets = [train_dataset, val_dataset]
 print("Training examples found:", len(train_dataset))
