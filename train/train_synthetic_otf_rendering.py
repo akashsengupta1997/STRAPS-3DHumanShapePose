@@ -357,7 +357,7 @@ def train_synthetic_otf_rendering(device,
         if save_model_weights_this_epoch:
             for metric in save_val_metrics:
                 best_epoch_val_metrics[metric] = metrics_tracker.history['val_' + metric][-1]
-            print("Best epoch val metrics updated!")
+            print("Best epoch val metrics updated to ", best_epoch_val_metrics)
             best_model_wts = copy.deepcopy(regressor.state_dict())
             best_epoch = epoch
             print("Best model weights updated!")
