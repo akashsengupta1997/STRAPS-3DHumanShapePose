@@ -39,14 +39,7 @@ Download the required additional files [here](https://drive.google.com/drive/fol
     └── ...
 
 ### Model checkpoints
-Download pre-trained model checkpoints for our SMPL regressor, as well as for PointRend and DensePose (via detectron2) from [here](https://drive.google.com/drive/folders/1QX5NBR6GgmfP206bMHN9ZgK8_1QEKSdg?usp=sharing). Place these files in the `checkpoints` directory, like so:
-
-    STRAPS-3DHumanShapePose
-        ├── checkpoints                            # Folder with model checkpoints
-        │   ├── densepose_rcnn_R_101_fpn_s1x.pkl
-        │   ├── pointrend_rcnn_R_50_fpn.pkl
-        │   └── straps_model_checkpoint.tar           
-        └── ...
+Download pre-trained model checkpoints for our SMPL regressor, as well as for PointRend and DensePose (via detectron2) from [here](https://drive.google.com/drive/folders/1QX5NBR6GgmfP206bMHN9ZgK8_1QEKSdg?usp=sharing). Place these files in the `checkpoints` directory.
 
 ### Training data
 If you wish to train using the STRAPS framework, we provide pre-processed npz files with training and validation pose parameters [here](https://drive.google.com/drive/folders/1CLOqQBrTos7vhohjFcU2OFkNYmyvQf6t?usp=sharing). Place these files in the `data` directory. Note that the model described in the STRAPS paper was trained on SMPL poses from Human3.6M (obtained using MoSh). We cannot distribute these due to license limitations. However, we have prepared npz files with SMPL poses from the AMASS dataset to replace H3.6M, which should provide similar performance.
