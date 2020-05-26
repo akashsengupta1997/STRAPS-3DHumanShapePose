@@ -24,7 +24,7 @@ You will need to download the SMPL model. The [neutral model](http://smplify.is.
 Download required additional files here:  Place both the SMPL model and the additional files in the `additional` directory such that they have the following structure:
 
     STRAPS-3DHumanShapePose
-    ├── additional                                      # Folder with additional files
+    ├── additional                                # Folder with additional files
     │   ├── smpl
     │       ├── SMPL_NEUTRAL.pkl                  # Gender-neutral SMPL model 
     │   ├── cocoplus_regressor.npy                # Cocoplus joints regressor
@@ -40,7 +40,7 @@ Download required additional files here:  Place both the SMPL model and the addi
 Download pre-trained model checkpoints for our SMPL regressor, as well as for PointRend and DensePose (via detectron2) from here:  Place these files in a checkpoints directory, like so:
 
     STRAPS-3DHumanShapePose
-        ├── checkpoints                               # Folder with model checkpoints
+        ├── checkpoints                            # Folder with model checkpoints
         │   ├── densepose_rcnn_R_101_fpn_s1x.pkl
         │   ├── pointrend_rcnn_R_50_fpn.pkl
         │   └── straps_model_checkpoint.tar           
