@@ -69,9 +69,9 @@ print("Save val metrics:", save_val_metrics)
 
 # ----------------------- Paths -----------------------
 # Path to npz with training data.
-train_path = 'data/amass_h36m_up3d_3dpw_train.npz'  # TODO change to file without h36m
+train_path = 'data/amass_up3d_3dpw_train.npz'
 # Path to npz with validation data.
-val_path = 'data/h36m_up3d_3dpw_val.npz'  # TODO change to file without h36m
+val_path = 'data/up3d_3dpw_val.npz'
 
 # Path to save model weights to (without .tar extension).
 model_save_path = os.path.join('./checkpoints/model_training/straps_model_checkpoint_exp001')
