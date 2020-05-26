@@ -1,4 +1,6 @@
 # STRAPS-3DHumanShapePose
+Code repository for the paper:  
+![teaser](teaser.png)
 
 ## Installation
 
@@ -49,12 +51,12 @@ Download pre-trained model checkpoints for our SMPL regressor, as well as for Po
 ### Training data
 If you wish to train using the STRAPS framework, we provide pre-processed npz files with training and validation pose parameters [here](https://drive.google.com/drive/folders/1CLOqQBrTos7vhohjFcU2OFkNYmyvQf6t?usp=sharing). Place these files in the `data` directory. Note that the model described in the STRAPS paper was trained on SMPL poses from Human3.6M (obtained using MoSh). We cannot distribute these due to license limitations. However, we have prepared npz files with SMPL poses from the AMASS dataset to replace H3.6M, which should provide similar performance.
 
-# Inference
+## Inference
 `run_predict.py` is used to run inference on a given folder of input images. For example, running inference on the demo folder:
 ```
 python run_predict.py --input ./demo --checkpoint checkpoints/straps_model_checkpoint.tar --silh_from pointrend
 ```
 You can choose between using `--silh_from pointrend` and `--silh_from densepose`  to obtain human silhouettes. PointRend provides more accurate silhouettes for easy body poses but DensePose is more robust to challenging body poses.
 
-# Training
+## Training
 The training options within the `run_train.py` file can be edited as desired. Since STRAPS does not require image data, the only training data you are required to download are the pre-processed npz files (above). Then, simply do `python run_train.py`.
