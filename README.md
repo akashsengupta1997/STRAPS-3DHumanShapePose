@@ -60,3 +60,15 @@ You can choose between using `--silh_from pointrend` and `--silh_from densepose`
 
 ## Training
 The training options within the `run_train.py` file can be edited as desired. Since STRAPS does not require image data, the only training data you are required to download are the pre-processed npz files (above). Then, simply do `python run_train.py`.
+
+## Acknowledgments
+Code was adapted from/influenced by the following repos - thanks to the authors!
+
+- [HMR](https://github.com/akanazawa/hmr)
+
+- [SPIN](https://github.com/nkolot/SPIN)
+
+- [VIBE](https://github.com/mkocabas/VIBE)
+
+- [detectron2](https://github.com/facebookresearch/detectron2)
+
