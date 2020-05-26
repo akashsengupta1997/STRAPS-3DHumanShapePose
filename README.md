@@ -49,7 +49,9 @@ If you wish to train using the STRAPS framework, we provide pre-processed npz fi
 ```
 python run_predict.py --input ./demo --checkpoint checkpoints/straps_model_checkpoint.tar --silh_from pointrend
 ```
-You can choose between using `--silh_from pointrend` and `--silh_from densepose`  to obtain human silhouettes. PointRend provides more accurate silhouettes for easy body poses but DensePose is more robust to challenging body poses. Best results are achieved when the image is roughly cropped and centred around the subject person.
+You can choose between using `--silh_from pointrend` and `--silh_from densepose`  to obtain human silhouettes. PointRend provides more accurate silhouettes for easy body poses but DensePose is more robust to challenging body poses. Best results are achieved when the image is roughly cropped and centred around the subject person. 
+
+If you are running inference on a remote machine, you might run into problems getting `pyrender` to run off-screen/headless rendering. If you have EGL installed, uncommenting the appropriate line in `run_predict.py` might work. If not, simply disable pyrender rendering during inference.
 
 ## Training
 The training options within the `run_train.py` file can be edited as desired. Since STRAPS does not require image data, the only training data you are required to download are the pre-processed npz files (above). Then, simply do `python run_train.py`.
