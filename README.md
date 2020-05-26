@@ -63,4 +63,5 @@ Code was adapted from/influenced by the following repos - thanks to the authors!
 - [SPIN](https://github.com/nkolot/SPIN)
 - [VIBE](https://github.com/mkocabas/VIBE)
 - [detectron2](https://github.com/facebookresearch/detectron2)
+- [NMR PyTorch](https://github.com/daniilidis-group/neural_renderer)
 
