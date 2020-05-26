@@ -108,8 +108,6 @@ def train_synthetic_otf_rendering(device,
         print('Training.')
         regressor.train()
         for batch_num, samples_batch in enumerate(tqdm(train_dataloader)):
-            if batch_num == 100:
-                break
             # ---------------- SYNTHETIC DATA GENERATION ----------------
             with torch.no_grad():
                 # TARGET SMPL PARAMETERS
@@ -248,8 +246,6 @@ def train_synthetic_otf_rendering(device,
         regressor.eval()
         with torch.no_grad():
             for batch_num, samples_batch in enumerate(tqdm(val_dataloader)):
-                if batch_num == 100:
-                    break
                 # ---------------- SYNTHETIC DATA GENERATION ----------------
                 # TARGET SMPL PARAMETERS
                 target_pose = samples_batch['pose']
