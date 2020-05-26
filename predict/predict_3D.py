@@ -94,7 +94,7 @@ def predict_3D(input,
 
     # Set-up SMPL model.
     smpl = SMPL(config.SMPL_MODEL_DIR, batch_size=1).to(device)
-    
+
     if render_vis:
         # Set-up renderer for visualisation.
         wp_renderer = Renderer(resolution=(proxy_rep_input_wh, proxy_rep_input_wh))

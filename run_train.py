@@ -74,8 +74,12 @@ train_path = 'data/amass_h36m_up3d_3dpw_train.npz'  # TODO change to file withou
 val_path = 'data/h36m_up3d_3dpw_val.npz'  # TODO change to file without h36m
 
 # Path to save model weights to (without .tar extension).
-model_save_path = os.path.join('./checkpoints/straps_model_checkpoint_exp001')
+model_save_path = os.path.join('./checkpoints/model_training/straps_model_checkpoint_exp001')
 log_path = os.path.join('./logs/straps_model_logs_exp001.pkl')
+if not os.path.isdir('./checkpoints/model_training'):
+    os.makedirs('./checkpoints/model_training')
+if not os.path.isdir('./logs'):
+    os.makedirs('./logs')
 
 resume_from_epoch = None  # Epoch number from which to resume training (if applicable).
 if resume_from_epoch is not None:
