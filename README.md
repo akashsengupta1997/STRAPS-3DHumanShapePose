@@ -1,4 +1,4 @@
-# STRAPS-3DHumanShapePose
+# STRAPS - Synthetic Training for Real Accurate Pose and Shape
 Code repository for the paper:  
 ![teaser](teaser.png)
 
