@@ -36,7 +36,7 @@ Download required additional files here:  Place both the SMPL model and the addi
     │   └── vertex_texture.npy                    # etc.
     └── ...
 
-### Model checkpoints.
+### Model checkpoints
 Download pre-trained model checkpoints for our SMPL regressor, as well as for PointRend and DensePose (via detectron2) from here:  Place these files in a checkpoints directory, like so:
 
     STRAPS-3DHumanShapePose
@@ -45,4 +45,16 @@ Download pre-trained model checkpoints for our SMPL regressor, as well as for Po
         │   ├── pointrend_rcnn_R_50_fpn.pkl
         │   └── straps_model_checkpoint.tar           
         └── ...
-  
+
+### Training data
+If you wish to train using the STRAPS framework, we provide pre-processed npz files with training and validation pose parameters here: Place these files in the data directory.
+
+# Inference
+`run_predict.py` is used to run inference on a given folder of input images. For example, running inference on the demo folder:
+```
+python run_predict.py --input ./demo --checkpoint checkpoints/straps_model_checkpoint.tar --silh_from pointrend
+```
+You can choose between using PointRend and DensePose to obtain human silhouettes. PointRend provides more accurate silhouettes for easy body poses but DensePose is more robust to challenging body poses.
+
+# Training
+`run_train.py` is used to run model training. The options within the file can be edited as desired.
