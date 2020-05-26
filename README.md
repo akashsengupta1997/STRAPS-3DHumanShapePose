@@ -21,7 +21,7 @@ The remaining dependencies can be installed by simply running: `pip install -r r
 ### Additional files
 You will need to download the SMPL model. The [neutral model](http://smplify.is.tue.mpg.de) is required for training and running the demo code. If you want evaluate the model on datasets with gendered SMPL labels (such as 3DPW and SSP-3D), the male and female models are available [here](http://smpl.is.tue.mpg.de). You will need to convert the SMPL model files to be compatible with python3 by removing any chumpy objects. To do so, please follow the instructions [here](https://github.com/vchoutas/smplx/tree/master/tools).
 
-Download required additional files here:  Place both the SMPL model and the additional files in the `additional` directory such that they have the following structure:
+Download required additional files [here] (https://drive.google.com/drive/folders/1phJix1Fp-AbJgoLImb19eXCWEK7ZnAp_?usp=sharing). Place both the SMPL model and the additional files in the `additional` directory such that they have the following structure:
 
     STRAPS-3DHumanShapePose
     ├── additional                                # Folder with additional files
