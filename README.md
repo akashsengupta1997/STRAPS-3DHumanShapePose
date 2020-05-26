@@ -37,7 +37,7 @@ Download required additional files [here](https://drive.google.com/drive/folders
     └── ...
 
 ### Model checkpoints
-Download pre-trained model checkpoints for our SMPL regressor, as well as for PointRend and DensePose (via detectron2) from [here](https://drive.google.com/drive/folders/1QX5NBR6GgmfP206bMHN9ZgK8_1QEKSdg?usp=sharing). Place these files in a `checkpoints` directory, like so:
+Download pre-trained model checkpoints for our SMPL regressor, as well as for PointRend and DensePose (via detectron2) from [here](https://drive.google.com/drive/folders/1QX5NBR6GgmfP206bMHN9ZgK8_1QEKSdg?usp=sharing). Place these files in the `checkpoints` directory, like so:
 
     STRAPS-3DHumanShapePose
         ├── checkpoints                            # Folder with model checkpoints
