@@ -21,7 +21,7 @@ The remaining dependencies can be installed by simply running: `pip install -r r
 ### Additional files
 You will need to download the SMPL model. The [neutral model](http://smplify.is.tue.mpg.de) is required for training and running the demo code. If you want evaluate the model on datasets with gendered SMPL labels (such as 3DPW and SSP-3D), the male and female models are available [here](http://smpl.is.tue.mpg.de). You will need to convert the SMPL model files to be compatible with python3 by removing any chumpy objects. To do so, please follow the instructions [here](https://github.com/vchoutas/smplx/tree/master/tools).
 
-Download required additional files [here] (https://drive.google.com/drive/folders/1phJix1Fp-AbJgoLImb19eXCWEK7ZnAp_?usp=sharing). Place both the SMPL model and the additional files in the `additional` directory such that they have the following structure:
+Download required additional files [here](https://drive.google.com/drive/folders/1phJix1Fp-AbJgoLImb19eXCWEK7ZnAp_?usp=sharing). Place both the SMPL model and the additional files in the `additional` directory such that they have the following structure:
 
     STRAPS-3DHumanShapePose
     ├── additional                                # Folder with additional files
@@ -37,7 +37,7 @@ Download required additional files [here] (https://drive.google.com/drive/folder
     └── ...
 
 ### Model checkpoints
-Download pre-trained model checkpoints for our SMPL regressor, as well as for PointRend and DensePose (via detectron2) from here:  Place these files in a checkpoints directory, like so:
+Download pre-trained model checkpoints for our SMPL regressor, as well as for PointRend and DensePose (via detectron2) from [here](https://drive.google.com/drive/folders/1QX5NBR6GgmfP206bMHN9ZgK8_1QEKSdg?usp=sharing). Place these files in a `checkpoints` directory, like so:
 
     STRAPS-3DHumanShapePose
         ├── checkpoints                            # Folder with model checkpoints
@@ -47,7 +47,7 @@ Download pre-trained model checkpoints for our SMPL regressor, as well as for Po
         └── ...
 
 ### Training data
-If you wish to train using the STRAPS framework, we provide pre-processed npz files with training and validation pose parameters here: Place these files in the data directory. Note that the model described in the STRAPS paper was trained on SMPL poses from Human3.6M (obtained using MoSh). We cannot distribute these due to license limitations. However, we have prepared npz files with SMPL poses from the AMASS dataset to replace H3.6M, which should provide similar performance.
+If you wish to train using the STRAPS framework, we provide pre-processed npz files with training and validation pose parameters [here](https://drive.google.com/drive/folders/1CLOqQBrTos7vhohjFcU2OFkNYmyvQf6t?usp=sharing). Place these files in the `data` directory. Note that the model described in the STRAPS paper was trained on SMPL poses from Human3.6M (obtained using MoSh). We cannot distribute these due to license limitations. However, we have prepared npz files with SMPL poses from the AMASS dataset to replace H3.6M, which should provide similar performance.
 
 # Inference
 `run_predict.py` is used to run inference on a given folder of input images. For example, running inference on the demo folder:
