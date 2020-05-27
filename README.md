@@ -51,6 +51,8 @@ python run_predict.py --input ./demo --checkpoint checkpoints/straps_model_check
 ```
 You can choose between using `--silh_from pointrend` and `--silh_from densepose`  to obtain human silhouettes. PointRend provides more accurate silhouettes for easy body poses but DensePose is more robust to challenging body poses. Best results are achieved when the image is roughly cropped and centred around the subject person. 
 
+To test STRAPS against a wide range of body shapes, we recommend checking out the [SSP-3D dataset](https://github.com/akashsengupta1997/SSP-3D).
+
 If you are running inference on a remote machine, you might run into problems getting `pyrender` to run off-screen/headless rendering. If you have EGL installed, uncommenting the appropriate line in `run_predict.py` might work. If not, simply disable pyrender rendering during inference.
 
 ## Training
