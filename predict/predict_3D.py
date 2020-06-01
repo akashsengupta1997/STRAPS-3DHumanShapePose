@@ -129,8 +129,6 @@ def predict_3D(input,
             regressor.eval()
             with torch.no_grad():
                 pred_cam_wp, pred_pose, pred_shape = regressor(proxy_rep)
-                # TODO comment this out with newer models trained with translation before scaling
-                pred_cam_wp[0, 1:] = pred_cam_wp[0, 1:] / pred_cam_wp[0, 0]  # Need to do this division because of different cam translation convention (described in my research diary)
                 # Convert pred pose to rotation matrices
                 if pred_pose.shape[-1] == 24 * 3:
                     pred_pose_rotmats = batch_rodrigues(pred_pose.contiguous().view(-1, 3))
