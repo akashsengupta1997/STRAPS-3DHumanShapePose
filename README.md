@@ -1,7 +1,7 @@
 # STRAPS - Synthetic Training for Real Accurate Pose and Shape
 
 Code repository for the paper:  
-**Synthetic Training for Accurate 3D HumanPose and Shape Estimation in the Wild**  
+**Synthetic Training for Accurate 3D Human Pose and Shape Estimation in the Wild**  
 Akash Sengupta, Ignas Budvytis, Roberto Cipolla  
 BMVC 2020  
 [[paper]][[supplementary]][[SSP-3D dataset](https://github.com/akashsengupta1997/SSP-3D)]  
