@@ -9,7 +9,12 @@ Code repository for the paper:
 - Python ≥ 3.6
 
 ### Instructions
-We recommend using a virtual environment to install relevant dependencies. After creating a virtual environment, first install torch and torchvision: `pip install torch==1.4.0 torchvision==0.5.0`
+We recommend using a virtual environment to install relevant dependencies:
+```
+python3 -m venv STRAPS
+source STRAPS/bin/activate
+```
+After creating a virtual environment, first install torch and torchvision: `pip install torch==1.4.0 torchvision==0.5.0`
 
 Then install (my fork of) detectron2 and its dependencies (cython and pycocotools):
 ```
