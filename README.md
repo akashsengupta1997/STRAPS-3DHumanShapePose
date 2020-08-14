@@ -68,6 +68,21 @@ If you are running inference on a remote machine, you might run into problems ge
 ## Training
 The training options within the `run_train.py` file can be edited as desired. Since STRAPS does not require image data, the only training data you are required to download are the pre-processed npz files (above). Then, simply do `python run_train.py`.
 
+## Citations
+
+If you use this code please cite the following publications:
+
+```
+@InProceedings{STRAPS2018BMVC,
+               author = {Sengupta, Akash and Budvytis, Ignas and Cipolla, Roberto},
+               title = {Synthetic Training for Accurate 3D Human Pose and Shape Estimation in the Wild},
+               booktitle = {British Machine Vision Conference (BMVC)},
+               month = {September},
+               year = {2020}                         
+}
+```
+
+
 ## Acknowledgments
 Code was adapted from/influenced by the following repos - thanks to the authors!
 
