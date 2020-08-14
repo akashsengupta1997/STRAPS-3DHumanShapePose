@@ -70,8 +70,7 @@ The training options within the `run_train.py` file can be edited as desired. Si
 
 ## Citations
 
-If you use this code please cite the following publications:
-
+If you find this code useful in your research, please cite the following publication:
 ```
 @InProceedings{STRAPS2018BMVC,
                author = {Sengupta, Akash and Budvytis, Ignas and Cipolla, Roberto},
