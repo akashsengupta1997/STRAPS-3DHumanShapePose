@@ -72,7 +72,7 @@ The training options within the `run_train.py` file can be edited as desired. Si
 
 If you find this code useful in your research, please cite the following publication:
 ```
-@InProceedings{STRAPS2018BMVC,
+@InProceedings{STRAPS2020BMVC,
                author = {Sengupta, Akash and Budvytis, Ignas and Cipolla, Roberto},
                title = {Synthetic Training for Accurate 3D Human Pose and Shape Estimation in the Wild},
                booktitle = {British Machine Vision Conference (BMVC)},
