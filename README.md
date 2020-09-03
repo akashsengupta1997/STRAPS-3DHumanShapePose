@@ -4,7 +4,7 @@ Code repository for the paper:
 **Synthetic Training for Accurate 3D Human Pose and Shape Estimation in the Wild**  
 Akash Sengupta, Ignas Budvytis, Roberto Cipolla  
 BMVC 2020  
-[[paper]][[supplementary]][[SSP-3D dataset](https://github.com/akashsengupta1997/SSP-3D)]  
+[[paper](https://www.bmvc2020-conference.com/assets/papers/0081.pdf)][[supplementary](https://www.bmvc2020-conference.com/assets/supp/0081_supp.pdf)][[SSP-3D dataset](https://github.com/akashsengupta1997/SSP-3D)]  
 ![teaser](teaser.png)
 
 ## Installation
