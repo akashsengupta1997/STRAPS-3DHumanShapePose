@@ -19,7 +19,7 @@ def normal_sample_shape(batch_size, mean_shape, std_vector):
     Gaussian sampling of shape parameter deviations from the mean.
     """
     device = mean_shape.device
-    delta_betas = mean_shape + torch.randn(batch_size, 10, device=device)*std_vector
+    delta_betas = torch.randn(batch_size, 10, device=device)*std_vector
     shape = delta_betas + mean_shape
     return shape
 
