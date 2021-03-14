@@ -65,6 +65,8 @@ To test STRAPS against a wide range of body shapes, we recommend checking out th
 
 If you are running inference on a remote machine, you might run into problems getting `pyrender` to run off-screen/headless rendering. If you have EGL installed, uncommenting the appropriate line in `run_predict.py` might work. If not, simply disable pyrender rendering during inference.
 
+NOTE: STRAPS requires inputs to be cropped around the predicted silhouette, with the tight bounding box scaled up by a factor of 1.2. I forgot to add the cropping step to the inference code in this repo, it will be added soon! In the meantime, note that using non-cropped inputs can result in worse 3D reconstructions.
+
 ## Training
 The training options within the `run_train.py` file can be edited as desired. Since STRAPS does not require image data, the only training data you are required to download are the pre-processed npz files (above). Then, simply do `python run_train.py`.
 
