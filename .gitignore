@@ -146,5 +146,3 @@ checkpoints/*
 !checkpoints/README.md
 
 data/*.npz
-
-demo/*_vis
