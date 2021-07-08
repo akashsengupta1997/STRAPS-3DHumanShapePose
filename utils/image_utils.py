@@ -96,11 +96,69 @@ def batch_resize(all_cropped_segs, all_cropped_joints2D, img_wh):
 
         joints2D = all_cropped_joints2D[i]
         resized_joints2D = joints2D * np.array([img_wh / float(orig_width),
-                                        img_wh / float(orig_height)])
+                                                img_wh / float(orig_height)])
         all_resized_joints2D.append(resized_joints2D)
 
     all_resized_segs = np.stack(all_resized_segs, axis=0)
     all_resized_joints2D = np.stack(all_resized_joints2D, axis=0)
 
     return all_resized_segs, all_resized_joints2D
+
+
+def crop_and_resize_silhouette_joints(silhouette,
+                                      joints2D,
+                                      out_wh,
+                                      image=None,
+                                      image_out_wh=None,
+                                      bbox_scale_factor=1.2):
+    # Find bounding box around silhouette
+    body_pixels = np.argwhere(silhouette != 0)
+    bbox_centre, height, width = convert_bbox_corners_to_centre_hw(np.concatenate([np.amin(body_pixels, axis=0),
+                                                                                   np.amax(body_pixels, axis=0)]))
+    wh = max(height, width) * bbox_scale_factor  # Make bounding box square with sides = wh
+    bbox_corners = convert_bbox_centre_hw_to_corners(bbox_centre, wh, wh)
+    top_left = bbox_corners[:2].astype(np.int16)
+    bottom_right = bbox_corners[2:].astype(np.int16)
+    top_left_orig = top_left.copy()
+    bottom_right_orig = bottom_right.copy()
+    top_left[top_left < 0] = 0
+    bottom_right[bottom_right < 0] = 0
+    # Crop silhouette
+    orig_height, orig_width = silhouette.shape[:2]
+    silhouette = silhouette[top_left[0]: bottom_right[0], top_left[1]: bottom_right[1]]
+    # Pad silhouette if crop not square
+    silhouette = cv2.copyMakeBorder(src=silhouette,
+                                    top=max(0, -top_left_orig[0]),
+                                    bottom=max(0, bottom_right_orig[0] - orig_height),
+                                    left=max(0, -top_left_orig[1]),
+                                    right=max(0, bottom_right_orig[1] - orig_width),
+                                    borderType=cv2.BORDER_CONSTANT,
+                                    value=0)
+    crop_height, crop_width = silhouette.shape[:2]
+    # Resize silhouette
+    silhouette = cv2.resize(silhouette, (out_wh, out_wh),
+                            interpolation=cv2.INTER_NEAREST)
+
+    # Translate and resize joints2D
+    joints2D = joints2D[:, :2] - top_left_orig[::-1]
+    joints2D = joints2D * np.array([out_wh / float(crop_width),
+                                    out_wh / float(crop_height)])
+
+    if image is not None:
+        # Crop image
+        orig_height, orig_width = image.shape[:2]
+        image = image[top_left[0]: bottom_right[0], top_left[1]: bottom_right[1]]
+        # Pad image if crop not square
+        image = cv2.copyMakeBorder(src=image,
+                                   top=max(0, -top_left_orig[0]),
+                                   bottom=max(0, bottom_right_orig[0] - orig_height),
+                                   left=max(0, -top_left_orig[1]),
+                                   right=max(0, bottom_right_orig[1] - orig_width),
+                                   borderType=cv2.BORDER_CONSTANT,
+                                   value=0)
+        # Resize silhouette
+        image = cv2.resize(image, (image_out_wh, image_out_wh),
+                           interpolation=cv2.INTER_LINEAR)
+
+    return silhouette, joints2D, image
 

@@ -20,7 +20,7 @@ from predict.predict_densepose import predict_densepose
 from models.smpl_official import SMPL
 from renderers.weak_perspective_pyrender_renderer import Renderer
 
-from utils.image_utils import pad_to_square
+from utils.image_utils import pad_to_square, crop_and_resize_silhouette_joints
 from utils.cam_utils import orthographic_project_torch
 from utils.joints2d_utils import undo_keypoint_normalisation
 from utils.label_conversions import convert_multiclass_to_binary_labels, \
@@ -66,13 +66,8 @@ def setup_detectron2_predictors(silhouettes_from='densepose'):
 
 def create_proxy_representation(silhouette,
                                 joints2D,
-                                in_wh,
                                 out_wh):
-    silhouette = cv2.resize(silhouette, (out_wh, out_wh),
-                            interpolation=cv2.INTER_NEAREST)
-    joints2D = joints2D[:, :2]
-    joints2D = joints2D * np.array([out_wh / float(in_wh),
-                                    out_wh / float(in_wh)])
+
     heatmaps = convert_2Djoints_to_gaussian_heatmaps(joints2D.astype(np.int16),
                                                      out_wh)
     proxy_rep = np.concatenate([silhouette[:, :, None], heatmaps], axis=-1)
@@ -117,10 +112,15 @@ def predict_3D(input,
             elif silhouettes_from == 'densepose':
                 silhouette, silhouette_vis = predict_densepose(image, silhouette_predictor)
                 silhouette = convert_multiclass_to_binary_labels(silhouette)
-
+            # Crop around silhouette
+            silhouette, joints2D, image = crop_and_resize_silhouette_joints(silhouette,
+                                                                            joints2D,
+                                                                            out_wh=config.REGRESSOR_IMG_WH,
+                                                                            image=image,
+                                                                            image_out_wh=proxy_rep_input_wh,
+                                                                            bbox_scale_factor=1.2)
             # Create proxy representation
             proxy_rep = create_proxy_representation(silhouette, joints2D,
-                                                    in_wh=proxy_rep_input_wh,
                                                     out_wh=config.REGRESSOR_IMG_WH)
             proxy_rep = proxy_rep[None, :, :, :]  # add batch dimension
             proxy_rep = torch.from_numpy(proxy_rep).float().to(device)
