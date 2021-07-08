@@ -66,7 +66,7 @@ def setup_detectron2_predictors(silhouettes_from='densepose'):
 
 def create_proxy_representation(silhouette,
                                 joints2D,
-                                in_wh,
+                                image,
                                 out_wh,
                                 bbox_scale_factor=1.2):
     # Find bounding box around silhouette
@@ -105,7 +105,19 @@ def create_proxy_representation(silhouette,
     proxy_rep = np.concatenate([silhouette[:, :, None], heatmaps], axis=-1)
     proxy_rep = np.transpose(proxy_rep, [2, 0, 1])  # (C, out_wh, out_WH)
 
-    return proxy_rep
+    # Also crop image
+    orig_height, orig_width = image.shape[:2]
+    vis_mask = image[top_left[0]: bottom_right[0], top_left[1]: bottom_right[1]]
+    vis_mask = cv2.copyMakeBorder(src=vis_mask,
+                                  top=max(0, -top_left_orig[0]),
+                                  bottom=max(0, bottom_right_orig[0] - orig_height),
+                                  left=max(0, -top_left_orig[1]),
+                                  right=max(0, bottom_right_orig[1] - orig_width),
+                                  borderType=cv2.BORDER_CONSTANT,
+                                  value=0)
+    image = cv2.resize(vis_mask, (out_wh, out_wh), interpolation=cv2.INTER_LINEAR)
+
+    return proxy_rep, image
 
 
 def predict_3D(input,
@@ -146,9 +158,10 @@ def predict_3D(input,
                 silhouette = convert_multiclass_to_binary_labels(silhouette)
 
             # Create proxy representation
-            proxy_rep = create_proxy_representation(silhouette, joints2D,
-                                                    in_wh=proxy_rep_input_wh,
-                                                    out_wh=config.REGRESSOR_IMG_WH)
+            proxy_rep, image = create_proxy_representation(silhouette,
+                                                           joints2D,
+                                                           image,
+                                                           out_wh=config.REGRESSOR_IMG_WH)
             proxy_rep = proxy_rep[None, :, :, :]  # add batch dimension
             proxy_rep = torch.from_numpy(proxy_rep).float().to(device)
 
@@ -192,6 +205,7 @@ def predict_3D(input,
             plt.gca().xaxis.set_major_locator(plt.NullLocator())
             plt.gca().yaxis.set_major_locator(plt.NullLocator())
             plt.savefig(os.path.join(input, 'verts_vis', 'verts_'+fname))
+            plt.close()
 
             if render_vis:
                 rend_img = wp_renderer.render(verts=pred_vertices, cam=pred_cam_wp, img=image)
@@ -215,4 +229,5 @@ def predict_3D(input,
                 plt.gca().xaxis.set_major_locator(plt.NullLocator())
                 plt.gca().yaxis.set_major_locator(plt.NullLocator())
                 plt.savefig(os.path.join(input, 'proxy_vis', 'proxy_rep' + fname))
+                plt.close()
 
