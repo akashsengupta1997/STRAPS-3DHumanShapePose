@@ -20,7 +20,7 @@ from predict.predict_densepose import predict_densepose
 from models.smpl_official import SMPL
 from renderers.weak_perspective_pyrender_renderer import Renderer
 
-from utils.image_utils import pad_to_square
+from utils.image_utils import pad_to_square, convert_bbox_corners_to_centre_hw, convert_bbox_centre_hw_to_corners
 from utils.cam_utils import orthographic_project_torch
 from utils.joints2d_utils import undo_keypoint_normalisation
 from utils.label_conversions import convert_multiclass_to_binary_labels, \
@@ -67,12 +67,39 @@ def setup_detectron2_predictors(silhouettes_from='densepose'):
 def create_proxy_representation(silhouette,
                                 joints2D,
                                 in_wh,
-                                out_wh):
+                                out_wh,
+                                bbox_scale_factor=1.2):
+    # Find bounding box around silhouette
+    body_pixels = np.argwhere(silhouette != 0)
+    bbox_centre, height, width = convert_bbox_corners_to_centre_hw(np.concatenate([np.amin(body_pixels, axis=0),
+                                                                                   np.amax(body_pixels, axis=0)]))
+    wh = max(height, width) * bbox_scale_factor  # Make bounding box square with sides = wh
+    bbox_corners = convert_bbox_centre_hw_to_corners(bbox_centre, wh, wh)
+    top_left = bbox_corners[:2].astype(np.int16)
+    bottom_right = bbox_corners[2:].astype(np.int16)
+    top_left_orig = top_left.copy()
+    bottom_right_orig = bottom_right.copy()
+    top_left[top_left < 0] = 0
+    bottom_right[bottom_right < 0] = 0
+    # Crop
+    orig_height, orig_width = silhouette.shape[:2]
+    silhouette = silhouette[top_left[0]: bottom_right[0], top_left[1]: bottom_right[1]]
+    # Pad if crop not square
+    silhouette = cv2.copyMakeBorder(src=silhouette,
+                                    top=max(0, -top_left_orig[0]),
+                                    bottom=max(0, bottom_right_orig[0] - orig_height),
+                                    left=max(0, -top_left_orig[1]),
+                                    right=max(0, bottom_right_orig[1] - orig_width),
+                                    borderType=cv2.BORDER_CONSTANT,
+                                    value=0)
+    crop_height, crop_width = silhouette.shape[:2]
+    # Resize
     silhouette = cv2.resize(silhouette, (out_wh, out_wh),
                             interpolation=cv2.INTER_NEAREST)
-    joints2D = joints2D[:, :2]
-    joints2D = joints2D * np.array([out_wh / float(in_wh),
-                                    out_wh / float(in_wh)])
+
+    joints2D = joints2D[:, :2] - top_left_orig[::-1]
+    joints2D = joints2D * np.array([out_wh / float(crop_width),
+                                    out_wh / float(crop_height)])
     heatmaps = convert_2Djoints_to_gaussian_heatmaps(joints2D.astype(np.int16),
                                                      out_wh)
     proxy_rep = np.concatenate([silhouette[:, :, None], heatmaps], axis=-1)
@@ -181,3 +208,11 @@ def predict_3D(input,
                     os.makedirs(os.path.join(input, 'proxy_vis'))
                 cv2.imwrite(os.path.join(input, 'proxy_vis', 'silhouette_'+fname), silhouette_vis)
                 cv2.imwrite(os.path.join(input, 'proxy_vis', 'joints2D_'+fname), joints2D_vis)
+                plt.figure()
+                plt.gca().set_axis_off()
+                plt.imshow(proxy_rep.cpu().detach().numpy().sum(axis=1)[0])
+                plt.margins(0, 0)
+                plt.gca().xaxis.set_major_locator(plt.NullLocator())
+                plt.gca().yaxis.set_major_locator(plt.NullLocator())
+                plt.savefig(os.path.join(input, 'proxy_vis', 'proxy_rep' + fname))
+
