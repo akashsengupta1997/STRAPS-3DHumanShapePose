@@ -8,7 +8,7 @@ def augment_cam_t(mean_cam_t, xy_std=0.05, delta_z_range=[-5, 5]):
     delta_tx_ty = torch.randn(batch_size, 2, device=device) * xy_std
     new_cam_t[:, :2] = mean_cam_t[:, :2] + delta_tx_ty
 
-    h, l = delta_z_range
+    l, h = delta_z_range
     delta_tz = (h - l) * torch.rand(batch_size, device=device) + l
     new_cam_t[:, 2] = mean_cam_t[:, 2] + delta_tz
 

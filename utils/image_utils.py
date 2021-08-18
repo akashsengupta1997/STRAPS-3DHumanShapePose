@@ -55,14 +55,14 @@ def batch_crop_seg_to_bounding_box(seg, joints2D, orig_scale_factor=1.2, delta_s
         bbox_corners = np.concatenate(bbox_corners)
         centre, height, width = convert_bbox_corners_to_centre_hw(bbox_corners)
         if delta_scale_range is not None:
-            h, l = delta_scale_range
+            l, h = delta_scale_range
             delta_scale = (h - l) * np.random.rand() + l
             scale_factor = orig_scale_factor + delta_scale
         else:
             scale_factor = orig_scale_factor
 
         if delta_centre_range is not None:
-            h, l = delta_centre_range
+            l, h = delta_centre_range
             delta_centre = (h - l) * np.random.rand(2) + l
             centre = centre + delta_centre
 

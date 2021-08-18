@@ -15,7 +15,7 @@ def random_verts2D_deviation(vertices, delta_verts2d_dev_range=[-0.01, 0.01]):
 
     noisy_vertices = vertices.clone()
 
-    h, l = delta_verts2d_dev_range
+    l, h = delta_verts2d_dev_range
     delta_verts2d_dev = (h - l) * torch.rand(batch_size, num_verts, 2, device=device) + l
     noisy_vertices[:, :, :2] = noisy_vertices[:, :, :2] + delta_verts2d_dev
 
@@ -38,11 +38,11 @@ def random_joints2D_deviation(joints2D,
     batch_size = joints2D.shape[0]
     device = joints2D.device
 
-    h, l = delta_j2d_dev_range
+    l, h = delta_j2d_dev_range
     delta_j2d_dev = (h - l) * torch.rand(batch_size, len(other_joints), 2, device=device) + l
     joints2D[:, other_joints, :] = joints2D[:, other_joints, :] + delta_j2d_dev
 
-    h, l = delta_j2d_hip_dev_range
+    l, h = delta_j2d_hip_dev_range
     delta_j2d_hip_dev_range = (h - l) * torch.rand(batch_size, len(hip_joints), 2, device=device) + l
     joints2D[:, hip_joints, :] = joints2D[:, hip_joints, :] + delta_j2d_hip_dev_range
 

@@ -8,7 +8,7 @@ def uniform_sample_shape(batch_size, mean_shape, delta_betas_range):
     Uniform sampling of shape parameter deviations from the mean.
     """
     device = mean_shape.device
-    h, l = delta_betas_range
+    l, h = delta_betas_range
     delta_betas = (h-l)*torch.rand(batch_size, 10, device=device) + l
     shape = delta_betas + mean_shape
     return shape  # (bs, 10)
