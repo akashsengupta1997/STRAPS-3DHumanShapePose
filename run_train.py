@@ -40,7 +40,7 @@ print("ResNet layers:", resnet_layers)
 print("IEF Num iters:", ief_iters)
 
 # ----------------------- Hyperparameters -----------------------
-num_epochs = 1000
+num_epochs = 100
 batch_size = 140
 lr = 0.0001
 epochs_per_save = 10
