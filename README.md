@@ -5,9 +5,11 @@ Code repository for the paper:
 Akash Sengupta, Ignas Budvytis, Roberto Cipolla  
 BMVC 2020  
 [[paper](https://www.bmvc2020-conference.com/assets/papers/0081.pdf)][[supplementary](https://www.bmvc2020-conference.com/assets/supp/0081_supp.pdf)][[SSP-3D dataset](https://github.com/akashsengupta1997/SSP-3D)]  
-![teaser](teaser.png)
 
 **Update**: Check out [Hierarchical Probabilistic 3D Humans](https://github.com/akashsengupta1997/HierarchicalProbabilistic3DHuman) for a better synthetic training framework for human pose and shape estimation from images.
+
+
+![teaser](teaser.png)
 
 ## Installation
 
